@@ -1,8 +1,5 @@
 
 
-from tabnanny import verbose
-
-
 def back_forth(partial_func):
     # Back-and-forth method for initial range
     # partial_func := func(alpha) = f_raw(alpha * dk)
