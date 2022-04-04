@@ -1,4 +1,3 @@
-from cmath import nan
 import numpy as np
 
 from line_serach import fib_searcher, back_forth
