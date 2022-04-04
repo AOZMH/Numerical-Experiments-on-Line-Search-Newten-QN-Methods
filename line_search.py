@@ -16,7 +16,7 @@ def back_forth(partial_func):
             step_size *= mag_scale
         return [alpha - step_size, alpha + step_size / mag_scale]
     else:
-        return [-10, 10]
+        return [-1, 1]
 
 
 def back_forth_test():
@@ -93,9 +93,12 @@ def fib_test():
     partial_func = func.get_partial_alpha(xk, dk)
     fib_search_inst = fib_searcher()
     #print(xk)
+    print('Before BF:', func.get_eval_infos())
     init_l, init_r = back_forth(partial_func)
+    print('Before Fib:', func.get_eval_infos())
     #init_l, init_r = -100, 100
-    search_res = fib_search_inst.fib_search(partial_func, init_l, init_r, 50, verbose=True)
+    search_res = fib_search_inst.fib_search(partial_func, init_l, init_r, 50, verbose=False)
+    print('After Fib:', func.get_eval_infos())
     print(search_res)
 
 
@@ -118,5 +121,5 @@ def gd_test():
 
 if __name__ == '__main__':
     #back_forth_test()
-    #fib_test()
-    gd_test()
+    fib_test()
+    #gd_test()

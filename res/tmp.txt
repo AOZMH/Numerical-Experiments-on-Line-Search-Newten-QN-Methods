@@ -1,0 +1,30 @@
+================= Scale of X is 8 ================
+Damp Newton     fx* = 6.3400    |gx*| = 0.00000172      time = 0.991324 epochs = 99     feval = 2550    geval = 100     Geval = 100
+Cholesky        fx* = 6.0174    |gx*| = 0.00000000      time = 0.096741 epochs = 8      feval = 221     geval = 9       Geval = 8
+Quasi SR1       fx* = 2.5799    |gx*| = 0.00000000      time = 0.314162 epochs = 40     feval = 1127    geval = 41      Geval = 0
+Quasi DFP       fx* = 5.7135    |gx*| = 0.00000000      time = 0.119444 epochs = 17     feval = 475     geval = 18      Geval = 0
+Quasi BFGS      fx* = 1.2967    |gx*| = 0.00000001      time = 0.322590 epochs = 44     feval = 1243    geval = 45      Geval = 0
+================= Scale of X is 16 ================
+Damp Newton     fx* = 8.2490    |gx*| = 0.00000066      time = 1.339925 epochs = 99     feval = 2576    geval = 100     Geval = 100
+Cholesky        fx* = 7.4247    |gx*| = 0.00000001      time = 0.078927 epochs = 6      feval = 177     geval = 7       Geval = 6
+Quasi SR1       fx* = 7.1448    |gx*| = 0.00000001      time = 0.183509 epochs = 31     feval = 881     geval = 32      Geval = 0
+Quasi DFP       fx* = 8.1069    |gx*| = 0.00000001      time = 0.217292 epochs = 35     feval = 995     geval = 36      Geval = 0
+Quasi BFGS      fx* = 7.4247    |gx*| = 0.00000000      time = 0.142298 epochs = 24     feval = 665     geval = 25      Geval = 0
+================= Scale of X is 32 ================
+Damp Newton     fx* = 5.1104    |gx*| = 0.00000024      time = 1.941255 epochs = 99     feval = 2640    geval = 100     Geval = 100
+Cholesky        fx* = 6.1600    |gx*| = 0.00000000      time = 0.151941 epochs = 8      feval = 231     geval = 9       Geval = 8
+Quasi SR1       fx* = 6.1600    |gx*| = 0.00000000      time = 0.114696 epochs = 19     feval = 521     geval = 20      Geval = 0
+Quasi DFP       fx* = 2.1522    |gx*| = 0.00000001      time = 0.275282 epochs = 49     feval = 1311    geval = 50      Geval = 0
+Quasi BFGS      fx* = 4.7119    |gx*| = 0.00000000      time = 0.176398 epochs = 30     feval = 823     geval = 31      Geval = 0
+================= Scale of X is 64 ================
+Damp Newton     fx* = 8.0151    |gx*| = 0.00001229      time = 3.256603 epochs = 99     feval = 2524    geval = 100     Geval = 100
+Cholesky        fx* = 6.7745    |gx*| = 0.00000000      time = 0.244087 epochs = 8      feval = 229     geval = 9       Geval = 8
+Quasi SR1       fx* = 6.5910    |gx*| = 0.00000001      time = 0.088765 epochs = 15     feval = 417     geval = 16      Geval = 0
+Quasi DFP       fx* = 6.5910    |gx*| = 0.00000001      time = 0.114725 epochs = 20     feval = 533     geval = 21      Geval = 0
+Quasi BFGS      fx* = 6.5910    |gx*| = 0.00000001      time = 0.097737 epochs = 15     feval = 411     geval = 16      Geval = 0
+================= Scale of X is 128 ================
+Damp Newton     fx* = 6.8139    |gx*| = 0.00000007      time = 5.992173 epochs = 99     feval = 2630    geval = 100     Geval = 100
+Cholesky        fx* = 5.8812    |gx*| = 0.00000000      time = 0.565495 epochs = 10     feval = 285     geval = 11      Geval = 10
+Quasi SR1       fx* = 4.5954    |gx*| = 0.00000001      time = 0.207421 epochs = 30     feval = 839     geval = 31      Geval = 0
+Quasi DFP       fx* = 5.7724    |gx*| = 0.00000001      time = 0.131062 epochs = 20     feval = 551     geval = 21      Geval = 0
+Quasi BFGS      fx* = 5.7724    |gx*| = 0.00000001      time = 0.132619 epochs = 19     feval = 525     geval = 20      Geval = 0

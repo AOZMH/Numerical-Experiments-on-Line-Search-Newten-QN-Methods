@@ -1,9 +1,10 @@
+from tabnanny import verbose
 import numpy as np
 
 from line_search import fib_searcher, back_forth
 
 
-def quasi_newton_method(func, g_func, G_func, x0, H0, eps=1e-8, n_epochs=1000, Hk_update_func=None):
+def quasi_newton_method(func, g_func, G_func, x0, H0, eps=1e-8, n_epochs=100, Hk_update_func=None, verbose=False):
     # The framework of quasi-newton method
     # x0: initial value of x
     # H0: initial positive-definite value of Hk
@@ -12,22 +13,21 @@ def quasi_newton_method(func, g_func, G_func, x0, H0, eps=1e-8, n_epochs=1000, H
     # Hk_update_func: update method for a specific quasi-newton method
 
     fib_search_inst = fib_searcher()
-    xk, last_fk, Hk, last_gk = x0, 1000000000, H0, None
+    xk, last_xk, last_fk, Hk, last_gk = x0, None, 1000000000, H0, None
 
     for epoch in range(n_epochs):
         # calculate gk & fk
         gk = g_func(xk)
-        if np.linalg.norm(gk) < eps:
-            break
         fk = func(xk)
-        if np.linalg.norm(fk - last_fk) < eps:
+        if np.linalg.norm(fk - last_fk) < eps and np.linalg.norm(gk) < eps:
             break
         
         # update Hk
         if epoch > 0:
-            sk = fk - last_fk   # sk = fk+1 - fk
+            sk = xk - last_xk   # sk = xk+1 - xk
             yk = gk - last_gk   # gk = gk+1 - gk
-            Hk = Hk_update_func(Hk, sk, yk)
+            Hk = Hk_update_func(Hk, sk.numpy(), yk.numpy())
+        last_xk = xk
         last_fk = fk
         last_gk = gk
 
@@ -37,11 +37,13 @@ def quasi_newton_method(func, g_func, G_func, x0, H0, eps=1e-8, n_epochs=1000, H
         # line search for alpha_k
         partial_func = func.get_partial_alpha(xk, dk)
         init_l, init_r = back_forth(partial_func)
-        ak = fib_search_inst.fib_search(partial_func, init_l, init_r, 50)
+        ak = fib_search_inst.fib_search(partial_func, init_l, init_r, 20)
 
         # update xk
         xk = xk + ak * dk
-        print('[{}] fk={:.5f}, |gk|={:.5f}'.format(epoch, fk, np.dot(gk, gk)))
+        if verbose:
+            print('[{}] fk={:.5f}, |gk|={:.8f}'.format(epoch, fk, np.linalg.norm(gk)))
+    return xk, epoch
 
 
 def sr1_update_func(Hk, sk, yk):
@@ -50,7 +52,7 @@ def sr1_update_func(Hk, sk, yk):
     upper = np.matmul(s_Hy.reshape(-1, 1), s_Hy.reshape(1, -1))
     lower = np.dot(s_Hy, yk)
     assert(np.isscalar(lower) and upper.shape == Hk.shape)
-    return Hk + (upper / lower).numpy()
+    return Hk + upper / lower
 
 
 def dfp_update_func(Hk, sk, yk):

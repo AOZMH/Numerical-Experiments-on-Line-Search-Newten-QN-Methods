@@ -13,6 +13,9 @@ class ackley_func:
         self.g_calls = g_calls
         self.G_calls = G_calls
     
+    def get_eval_infos(self):
+        return 'feval = {}\tgeval = {}\tGeval = {}'.format(self.func_calls, self.g_calls, self.G_calls)
+    
     def __call__(self, x):
         # Ackley's function
         # Input: x, an n-dim float vector
