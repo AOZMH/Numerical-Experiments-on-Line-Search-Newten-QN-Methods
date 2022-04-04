@@ -1,6 +1,6 @@
 import numpy as np
 
-from line_serach import fib_searcher, back_forth
+from line_search import fib_searcher, back_forth
 
 
 def quasi_newton_method(func, g_func, G_func, x0, H0, eps=1e-8, n_epochs=1000, Hk_update_func=None):
@@ -41,15 +41,16 @@ def quasi_newton_method(func, g_func, G_func, x0, H0, eps=1e-8, n_epochs=1000, H
 
         # update xk
         xk = xk + ak * dk
+        print('[{}] fk={:.5f}, |gk|={:.5f}'.format(epoch, fk, np.dot(gk, gk)))
 
 
 def sr1_update_func(Hk, sk, yk):
     # SR1 updater
     s_Hy = sk - np.dot(Hk, yk)
     upper = np.matmul(s_Hy.reshape(-1, 1), s_Hy.reshape(1, -1))
-    lower = np.dot(s_Hy, y)
+    lower = np.dot(s_Hy, yk)
     assert(np.isscalar(lower) and upper.shape == Hk.shape)
-    return Hk + upper / lower
+    return Hk + (upper / lower).numpy()
 
 
 def dfp_update_func(Hk, sk, yk):

@@ -1,6 +1,6 @@
 import numpy as np
 
-from line_serach import fib_searcher, back_forth
+from line_search import fib_searcher, back_forth
 
 
 def damp_newton_method(func, g_func, G_func, x0, eps=1e-8, n_epochs=1000):
@@ -31,6 +31,8 @@ def damp_newton_method(func, g_func, G_func, x0, eps=1e-8, n_epochs=1000):
 
         # update xk
         xk = xk + ak * dk
+        
+        print('[{}] fk={:.5f}, |gk|={:.5f}'.format(epoch, fk, np.dot(gk, gk)))
 
 
 def cholesky_correction(Gk, beta=1e-3, sigma=5):
@@ -47,7 +49,7 @@ def cholesky_correction(Gk, beta=1e-3, sigma=5):
         cur_Bk = Gk + tau * I
         try:
             L = np.linalg.cholesky(cur_Bk)
-        except LinAlgError:
+        except np.linalg.LinAlgError:
             # Cholesky failed, maybe not postive-definite, enlarge tau then
             tau = max(sigma * tau, beta)
             continue
@@ -85,4 +87,5 @@ def cholesky_newton_method(func, g_func, G_func, x0, eps=1e-8, n_epochs=1000):
 
         # update xk
         xk = xk + ak * dk
+        print('[{}] fk={:.5f}, |gk|={:.5f}'.format(epoch, fk, np.dot(gk, gk)))
 
