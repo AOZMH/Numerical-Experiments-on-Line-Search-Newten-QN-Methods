@@ -3,7 +3,7 @@ import numpy as np
 import torch
 
 from ackley_func import ackley_func
-from line_search import fib_searcher
+from line_search import fib_searcher, gll_searcher
 from newton import damp_newton_method
 from quasi_newton import quasi_newton_method, sr1_update_func, dfp_update_func, bfgs_update_func
 
@@ -42,7 +42,22 @@ def q_newton_test(x0, updater, line_searcher, trial_name):
 
 
 def main():
-    fib_search_inst = fib_searcher()
+    fib_search_inst = fib_searcher(gamma=5e-2, sigma=0.5, window=5, a0=8)
+    x_scales = [8, 16, 32, 64, 128]
+    #x_scales = [32]
+    for x_scale in x_scales:
+        print('================= Scale of X is {} ================'.format(x_scale))
+        #x0 = torch.randn(x_scale) * 32.768  # Ackley's function's range
+        x0 = torch.randn(x_scale) * 2
+        newton_test(x0, False, fib_search_inst, 'Damp Newton')
+        newton_test(x0, True, fib_search_inst, 'Cholesky')
+        q_newton_test(x0, sr1_update_func, fib_search_inst, 'Quasi SR1')
+        q_newton_test(x0, dfp_update_func, fib_search_inst, 'Quasi DFP')
+        q_newton_test(x0, bfgs_update_func, fib_search_inst, 'Quasi BFGS')
+
+
+def main_gll_search():
+    fib_search_inst = gll_searcher()
     x_scales = [8, 16, 32, 64, 128]
     #x_scales = [32]
     for x_scale in x_scales:
@@ -57,4 +72,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    #main()
+    main_gll_search()

@@ -106,7 +106,7 @@ def fib_test():
 
 class gll_searcher:
     # Nonmonotonic GLL line search
-    def __init__(self, gamma, sigma, window, a0):
+    def __init__(self, gamma=1e-3, sigma=0.5, window=5, a0=2):
         self.gamma = gamma
         self.sigma = sigma
         self.window = window
