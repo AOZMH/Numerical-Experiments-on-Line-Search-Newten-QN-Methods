@@ -4,15 +4,15 @@ import torch
 
 from ackley_func import ackley_func
 from line_search import fib_searcher
-from newton import damp_newton_method, cholesky_newton_method
+from newton import damp_newton_method
 from quasi_newton import quasi_newton_method, sr1_update_func, dfp_update_func, bfgs_update_func
 
 
-def newton_test(x0, optimizer, line_searcher, trial_name):
+def newton_test(x0, use_cholesky_correction, line_searcher, trial_name):
     # test newton methods
     func = ackley_func()
     t0 = time.time()
-    x_star, epochs = optimizer(func, func.g_ackley_func, func.G_ackley_func, x0, line_searcher, eps=1e-8)
+    x_star, epochs = damp_newton_method(func, func.g_ackley_func, func.G_ackley_func, x0, line_searcher, eps=1e-8, use_cholesky_correction=use_cholesky_correction)
     
     # output statistics
     elapsed_time = time.time() - t0
@@ -49,8 +49,8 @@ def main():
         print('================= Scale of X is {} ================'.format(x_scale))
         #x0 = torch.randn(x_scale) * 32.768  # Ackley's function's range
         x0 = torch.randn(x_scale) * 2
-        newton_test(x0, damp_newton_method, fib_search_inst, 'Damp Newton')
-        newton_test(x0, cholesky_newton_method, fib_search_inst, 'Cholesky')
+        newton_test(x0, False, fib_search_inst, 'Damp Newton')
+        newton_test(x0, True, fib_search_inst, 'Cholesky')
         q_newton_test(x0, sr1_update_func, fib_search_inst, 'Quasi SR1')
         q_newton_test(x0, dfp_update_func, fib_search_inst, 'Quasi DFP')
         q_newton_test(x0, bfgs_update_func, fib_search_inst, 'Quasi BFGS')

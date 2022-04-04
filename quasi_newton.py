@@ -11,6 +11,7 @@ def quasi_newton_method(func, g_func, G_func, x0, H0, line_searcher, eps=1e-8, n
     # Hk_update_func: update method for a specific quasi-newton method
 
     xk, last_xk, last_fk, Hk, last_gk = x0, None, 1000000000, H0, None
+    prev_fks = []
 
     for epoch in range(n_epochs):
         # calculate gk & fk
@@ -27,13 +28,20 @@ def quasi_newton_method(func, g_func, G_func, x0, H0, line_searcher, eps=1e-8, n
         last_xk = xk
         last_fk = fk
         last_gk = gk
+        prev_fks.append(fk)
 
         # dk = -Hk*gk
         dk = -np.dot(Hk, gk)
 
         # line search for alpha_k
         partial_func = func.get_partial_alpha(xk, dk)
-        ak = line_searcher.pipeline(partial_func, 20)
+        args = {
+            'n_func_calls': 20,
+            'prev_fks': prev_fks,
+            'gk': gk,
+            'dk': dk,
+        }
+        ak = line_searcher.pipeline(partial_func, args)
 
         # update xk
         xk = xk + ak * dk

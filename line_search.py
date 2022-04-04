@@ -1,3 +1,4 @@
+import numpy as np
 
 
 def back_forth(partial_func):
@@ -76,7 +77,8 @@ class fib_searcher:
         
         return (a + b) / 2
     
-    def pipeline(self, partial_func, n_func_calls):
+    def pipeline(self, partial_func, args):
+        n_func_calls = args['n_func_calls']
         # Full pipeline
         init_l, init_r = back_forth(partial_func)
         search_res = self.fib_search(partial_func, init_l, init_r, n_func_calls)
@@ -104,11 +106,23 @@ def fib_test():
 
 class gll_searcher:
     # Nonmonotonic GLL line search
-    def __init__(self, gamma, sigma):
-        self.gamma, self.sigma = gamma, sigma
+    def __init__(self, gamma, sigma, window, a0):
+        self.gamma = gamma
+        self.sigma = sigma
+        self.window = window
+        self.a0 = a0
     
-    def pipeline(self, partial_func):
-        pass
+    def pipeline(self, partial_func, args):
+        alpha = self.a0
+        # get max fk in history window
+        prev_fks = args['prev_fks']
+        gk, dk = args['gk'], args['dk']
+        max_fk = max(prev_fks[-self.window:])
+        gd_dot = np.dot(gk, dk)
+        assert(np.isscalar(gd_dot))
+        while partial_func(alpha) > max_fk + self.gamma * alpha * gd_dot:
+            alpha *= self.sigma
+        return alpha
 
 
 def gd_test():
