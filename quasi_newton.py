@@ -1,10 +1,8 @@
 from tabnanny import verbose
 import numpy as np
 
-from line_search import fib_searcher, back_forth
 
-
-def quasi_newton_method(func, g_func, G_func, x0, H0, eps=1e-8, n_epochs=100, Hk_update_func=None, verbose=False):
+def quasi_newton_method(func, g_func, G_func, x0, H0, line_searcher, eps=1e-8, n_epochs=100, Hk_update_func=None, verbose=False):
     # The framework of quasi-newton method
     # x0: initial value of x
     # H0: initial positive-definite value of Hk
@@ -12,7 +10,6 @@ def quasi_newton_method(func, g_func, G_func, x0, H0, eps=1e-8, n_epochs=100, Hk
     # eps: epsilon for the variation of function values & gradients to stop iteration
     # Hk_update_func: update method for a specific quasi-newton method
 
-    fib_search_inst = fib_searcher()
     xk, last_xk, last_fk, Hk, last_gk = x0, None, 1000000000, H0, None
 
     for epoch in range(n_epochs):
@@ -36,8 +33,7 @@ def quasi_newton_method(func, g_func, G_func, x0, H0, eps=1e-8, n_epochs=100, Hk
 
         # line search for alpha_k
         partial_func = func.get_partial_alpha(xk, dk)
-        init_l, init_r = back_forth(partial_func)
-        ak = fib_search_inst.fib_search(partial_func, init_l, init_r, 20)
+        ak = line_searcher.pipeline(partial_func, 20)
 
         # update xk
         xk = xk + ak * dk

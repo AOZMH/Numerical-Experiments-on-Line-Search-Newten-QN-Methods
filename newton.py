@@ -1,15 +1,12 @@
 from tabnanny import verbose
 import numpy as np
 
-from line_search import fib_searcher, back_forth
 
-
-def damp_newton_method(func, g_func, G_func, x0, eps=1e-8, n_epochs=100, verbose=False):
+def damp_newton_method(func, g_func, G_func, x0, line_searcher, eps=1e-8, n_epochs=100, verbose=False):
     # Damped Newton's method
     # x0: initial value of x
     # func, g_func, G_func: function, its gradient and hessian respectively
     # eps: epsilon for the variation of function values & gradients to stop iteration
-    fib_search_inst = fib_searcher()
     xk, last_fk = x0, 1000000000
 
     for epoch in range(n_epochs):
@@ -25,8 +22,7 @@ def damp_newton_method(func, g_func, G_func, x0, eps=1e-8, n_epochs=100, verbose
 
         # line search for alpha_k
         partial_func = func.get_partial_alpha(xk, dk)
-        init_l, init_r = back_forth(partial_func)
-        ak = fib_search_inst.fib_search(partial_func, init_l, init_r, 20)
+        ak = line_searcher.pipeline(partial_func, 20)
 
         # update xk
         xk = xk + ak * dk
@@ -57,12 +53,11 @@ def cholesky_correction(Gk, beta=1e-3, sigma=5):
     return cur_Bk
 
 
-def cholesky_newton_method(func, g_func, G_func, x0, eps=1e-8, n_epochs=100, verbose=False):
+def cholesky_newton_method(func, g_func, G_func, x0, line_searcher, eps=1e-8, n_epochs=100, verbose=False):
     # Corrected Newton's method via cholesky decomposition
     # x0: initial value of x
     # func, g_func, G_func: function, its gradient and hessian respectively
     # eps: epsilon for the variation of function values & gradients to stop iteration
-    fib_search_inst = fib_searcher()
     xk, last_fk = x0, 1000000000
 
     for epoch in range(n_epochs):
@@ -80,8 +75,7 @@ def cholesky_newton_method(func, g_func, G_func, x0, eps=1e-8, n_epochs=100, ver
 
         # line search for alpha_k
         partial_func = func.get_partial_alpha(xk, dk)
-        init_l, init_r = back_forth(partial_func)
-        ak = fib_search_inst.fib_search(partial_func, init_l, init_r, 20)
+        ak = line_searcher.pipeline(partial_func, 20)
 
         # update xk
         xk = xk + ak * dk

@@ -76,7 +76,7 @@ class fib_searcher:
         
         return (a + b) / 2
     
-    def fib_pipeline(self, partial_func, n_func_calls):
+    def pipeline(self, partial_func, n_func_calls):
         # Full pipeline
         init_l, init_r = back_forth(partial_func)
         search_res = self.fib_search(partial_func, init_l, init_r, n_func_calls)
@@ -100,6 +100,15 @@ def fib_test():
     search_res = fib_search_inst.fib_search(partial_func, init_l, init_r, 50, verbose=False)
     print('After Fib:', func.get_eval_infos())
     print(search_res)
+
+
+class gll_searcher:
+    # Nonmonotonic GLL line search
+    def __init__(self, gamma, sigma):
+        self.gamma, self.sigma = gamma, sigma
+    
+    def pipeline(self, partial_func):
+        pass
 
 
 def gd_test():
