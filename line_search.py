@@ -117,6 +117,8 @@ class gll_searcher:
         # get max fk in history window
         prev_fks = args['prev_fks']
         gk, dk = args['gk'], args['dk']
+        if np.dot(gk, dk) > 0:
+            alpha = -alpha
         max_fk = max(prev_fks[-self.window:])
         gd_dot = np.dot(gk, dk)
         assert(np.isscalar(gd_dot))

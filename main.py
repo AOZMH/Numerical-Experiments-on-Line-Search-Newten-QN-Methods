@@ -42,7 +42,7 @@ def q_newton_test(x0, updater, line_searcher, trial_name):
 
 
 def main():
-    fib_search_inst = fib_searcher(gamma=5e-2, sigma=0.5, window=5, a0=8)
+    fib_search_inst = fib_searcher()
     x_scales = [8, 16, 32, 64, 128]
     #x_scales = [32]
     for x_scale in x_scales:
@@ -57,7 +57,7 @@ def main():
 
 
 def main_gll_search():
-    fib_search_inst = gll_searcher()
+    fib_search_inst = gll_searcher(gamma=1e-3, sigma=0.5, window=5, a0=1)
     x_scales = [8, 16, 32, 64, 128]
     #x_scales = [32]
     for x_scale in x_scales:
