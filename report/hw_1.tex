@@ -93,18 +93,31 @@
 
 \section{实验设定}
 \subsection{目标函数选取}
-本实验通过Ackley函数评估不同方法，其形式如下：
-\[ \texttt{Ackley}(x) = -20 exp[-\frac{1}{5} \sqrt{\frac{1}{n}\sum\limits_{i=1}^n x_i^2}] - exp[\frac{1}{n} \sum\limits_{i=1}^n cos(2\pi x_i)] + 20+e \]
-Ackley函数具有全局最小值$x^* = (0,0,...,0), f(x^*)=0$，此外它还有众多极小值，其二维形式如图\ref{fig:ackley}所示，我们的算法旨在找到其中任一个局部极小值点。
-
 \begin{figure}[h]
   \centering
-  \includegraphics[width=.85\linewidth]{pics/ackley.png}
+  \includegraphics[width=.65\linewidth]{pics/ackley.png}
   \caption{二维Ackley函数的可视化}
   \label{fig:ackley}
 \end{figure}
 
+本实验通过Ackley函数评估不同方法，其形式如下：
+\[ \texttt{Ackley}(x) = -20 exp[-\frac{1}{5} \sqrt{\frac{1}{n}\sum\limits_{i=1}^n x_i^2}] - exp[\frac{1}{n} \sum\limits_{i=1}^n cos(2\pi x_i)] + 20+e \]
+
+Ackley函数具有全局最小值$x^* = (0,0,...,0), f(x^*)=0$，此外它还有众多极小值，其二维形式如图\ref{fig:ackley}所示，我们的算法旨在找到其中任一个局部极小值点。
+
 \subsection{线搜索算法}
+本实验实现了两类线搜索算法：
+\begin{itemize}
+  \item \textbf{精确线搜索}。采用Fibonacci法进行精确线搜索，算法过程如图\ref{fig:fib_algo}所示。在实验中，首先利用进退法获取初始搜索区间；此后进行Fibonacci搜索，给定函数调用次数n，利用此方法迭代n-1次即可获取精确搜索区间，我们取此区间的中点作为搜索结果$\alpha$。默认情况下，本文的实验设置$n=20$，进退法的初始步长$\alpha_0=2$，步长变化量$step=1$，步长扩大因子$mag=2$。
+  \begin{figure}[h]
+    \centering
+    \includegraphics[width=.8\linewidth]{pics/fib_algo.jpg}
+    \caption{Fibonacci搜索算法}
+    \label{fig:fib_algo}
+  \end{figure}
+  \item \textbf{非精确线搜索}。
+\end{itemize}
+
 
 
 \subsection{Newton方法}
