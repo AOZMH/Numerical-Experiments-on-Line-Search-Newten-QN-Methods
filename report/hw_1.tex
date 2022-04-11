@@ -115,7 +115,11 @@ Ackley函数具有全局最小值$x^* = (0,0,...,0), f(x^*)=0$，此外它还有
     \caption{Fibonacci搜索算法}
     \label{fig:fib_algo}
   \end{figure}
-  \item \textbf{非精确线搜索}。
+  \item \textbf{非精确线搜索}。使用非单调GLL线搜索进行非精确线搜索；GLL准则类似于Armijo准则，但对于下降方向$d_k$，它并不要求本步所取的$\alpha$让函数值相比上一步总是下降，相反它仅要求相比前几步中的某一步下降即可，这加快了搜索速度进而提高了线搜索效率，因此它也是一种非单调线搜索准则。
+  
+  具体地，基于GLL准则的线搜索算法从$\alpha_0 = 1$开始，不断搜索满足如下条件的$alpha$；如果$\alpha_k$不满足，更新$\alpha_{k+1} = \sigma\alpha_k$继续判断：
+  \[ f(x_k + \alpha d_k) \leq \min\limits_{0\leq j \leq min(k, M)} f(x_{k-j}) + \rho g_k^T d_k \alpha \]
+  可见该算法设置一个滑动窗口M，新函数值只要相对过去的窗口内的某个函数值满足Armijo准则即可。在实验中，设置$\sigma=0.5, \rho=1e-3, M=5$。
 \end{itemize}
 
 
