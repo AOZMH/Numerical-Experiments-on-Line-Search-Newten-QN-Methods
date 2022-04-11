@@ -124,12 +124,43 @@ Ackley函数具有全局最小值$x^* = (0,0,...,0), f(x^*)=0$，此外它还有
 
 
 \subsection{Newton方法}
-
+本实验实现了两种Newton方法：
+\begin{itemize}
+  \item \textbf{阻尼Newton法}。沿用教材中的算法，利用$-g_k = G_k d_k$求搜索方向，再通过线搜索（默认情况下用上述精确线搜索算法）得到步长$\alpha_k$以通过$x_{k+1} = x_k + \alpha_k d_k$更新。
+  \item \textbf{Cholesky修正Newton法}。上面的方法主要问题在于迭代时$G_k$常常不正定，造成$d_k$并非下降方向，为此通常利用$B_k = G_k + \nu I$修正Hessian矩阵使其正定再求解Newton方程。然而，$\nu$的取值并不容易快速确定，这里的Cholesky修正就是一种典型的高效修正方法。具体地，它设置初始$\nu = max(0, \min\limits_i G_k^{(i,i)})$，并对$B_k = G_k + \nu I$进行Cholesky分解，若成功则近似$B_k$已经“正定”，把它当作$G_k$的修正矩阵带入Newton方程；否则以指数形式增长$\nu = \sigma \nu$，继续迭代直至Cholesky分解成功或达到最大循环次数。在实验中，设置$\sigma=5$，最大循环次数为20。
+\end{itemize}
 
 
 \subsection{拟Newton方法}
 本实验实现了三种经典拟Newton方法：SR1，DFP和BFGS，使用$H_k$的更新公式以避免额外的矩阵求逆开销，公式的形式与教材中完全相同，这里不再赘述。
 
+\section{基本实验结果}
+本节比较上述2种Newton方法及3种拟Newton方法在Ackley函数上的收敛情况并进行分析。对于所有算法，通过标准正态分布随机选取长度为$n\in \{ 8, 16, 32, 64, 128 \}$的初始向量$x_0$，所有Newton型方法迭代最多100次，当满足$||g(x_k)|| < \epsilon \wedge |f(x_{k}) - f(x_{k-1})| < \epsilon, \epsilon=1e-8$时可提前终止迭代。所得结果如表\ref{tab:overall}所示。
+
+\begin{table*}[h]
+  \centering
+  \begin{tabular}{c c c}
+    \toprule
+    \bfseries Word 1 & \bfseries Word2 & \bfseries Similarity \\
+    \cmidrule(lr){1-3}
+    female & woman & 4.96 \\
+    finger & toe & 3.76 \\
+    flyer & justice & 1.18\\
+    \bottomrule
+  \end{tabular}
+  \caption{Newton型方法在Ackley函数上的比较}
+  \label{tab:overall}
+\end{table*}
+
+
+\section{进一步分析}
+\subsection{不同线搜索算法比较}
+
+\subsection{初始值对收敛性的影响}
+
+\section{总结}
+
+\section{布拉}
 
 本报告处理词汇相关度问题，给定两个单词$w_1$和$w_2$，需要对其在语义上的相关程度给出0-5的打分，分数越高代表越相关。如表\ref{tab:dataset_eg}所示，在语义上有更强关联（同义词，指代同种或类似概念）的词对具有更高的打分。
 
