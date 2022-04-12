@@ -1,0 +1,35 @@
+================= Scale of X is 8 ================
+Cholesky        1       fx* = 2.5799    |gx*| = 0.00000000      time = 0.039961 epochs = 8      feval = 27      geval = 9       Geval = 8
+Cholesky        2       fx* = 5.4958    |gx*| = 0.00000000      time = 0.056353 epochs = 12     feval = 37      geval = 13      Geval = 12
+Cholesky        4       fx* = 11.7645   |gx*| = 0.00000000      time = 0.045825 epochs = 10     feval = 31      geval = 11      Geval = 10
+Cholesky        8       fx* = 13.6390   |gx*| = 0.00000000      time = 0.037017 epochs = 8      feval = 29      geval = 9       Geval = 8
+Cholesky        16      fx* = 19.0864   |gx*| = 0.00000000      time = 0.024206 epochs = 5      feval = 16      geval = 6       Geval = 5
+Cholesky        32      fx* = 19.9720   |gx*| = 0.00000000      time = 0.055951 epochs = 11     feval = 34      geval = 12      Geval = 11
+================= Scale of X is 16 ================
+Cholesky        1       fx* = 2.5799    |gx*| = 0.00000000      time = 0.153899 epochs = 20     feval = 61      geval = 21      Geval = 20
+Cholesky        2       fx* = 7.6225    |gx*| = 0.00000000      time = 0.110115 epochs = 15     feval = 46      geval = 16      Geval = 15
+Cholesky        4       fx* = 11.9124   |gx*| = 0.00000000      time = 0.098346 epochs = 9      feval = 29      geval = 10      Geval = 9
+Cholesky        8       fx* = 18.0296   |gx*| = 0.00000000      time = 0.098380 epochs = 13     feval = 40      geval = 14      Geval = 13
+Cholesky        16      fx* = 18.2010   |gx*| = 0.00000000      time = 0.112786 epochs = 11     feval = 34      geval = 12      Geval = 11
+Cholesky        32      fx* = 19.9959   |gx*| = 0.00000000      time = 0.088042 epochs = 12     feval = 40      geval = 13      Geval = 12
+================= Scale of X is 32 ================
+Cholesky        1       fx* = 3.4689    |gx*| = 0.00000000      time = 0.223910 epochs = 17     feval = 61      geval = 18      Geval = 17
+Cholesky        2       fx* = 6.9592    |gx*| = 0.00000000      time = 0.106886 epochs = 8      feval = 29      geval = 9       Geval = 8
+Cholesky        4       fx* = 11.7761   |gx*| = 0.00000000      time = 0.133694 epochs = 10     feval = 41      geval = 11      Geval = 10
+Cholesky        8       fx* = 15.1418   |gx*| = 0.00000000      time = 0.119953 epochs = 9      feval = 31      geval = 10      Geval = 9
+Cholesky        16      fx* = 19.3774   |gx*| = 0.00000000      time = 0.229263 epochs = 15     feval = 46      geval = 16      Geval = 15
+Cholesky        32      fx* = 19.9571   |gx*| = 0.00000000      time = 0.182155 epochs = 14     feval = 45      geval = 15      Geval = 14
+================= Scale of X is 64 ================
+Cholesky        1       fx* = 3.6751    |gx*| = 0.00000001      time = 0.488668 epochs = 20     feval = 68      geval = 21      Geval = 20
+Cholesky        2       fx* = 7.1266    |gx*| = 0.00000000      time = 0.401298 epochs = 16     feval = 49      geval = 17      Geval = 16
+Cholesky        4       fx* = 12.1688   |gx*| = 0.00000000      time = 0.421787 epochs = 17     feval = 86      geval = 18      Geval = 17
+Cholesky        8       fx* = 16.6058   |gx*| = 0.00000000      time = 0.175066 epochs = 7      feval = 24      geval = 8       Geval = 7
+Cholesky        16      fx* = 19.1020   |gx*| = 0.00000000      time = 0.244743 epochs = 10     feval = 34      geval = 11      Geval = 10
+Cholesky        32      fx* = 19.9580   |gx*| = 0.00000000      time = 0.275064 epochs = 11     feval = 38      geval = 12      Geval = 11
+================= Scale of X is 128 ================
+Cholesky        1       fx* = 5.2257    |gx*| = 0.00000000      time = 0.678585 epochs = 14     feval = 70      geval = 15      Geval = 14
+Cholesky        2       fx* = 6.5065    |gx*| = 0.00000000      time = 0.327260 epochs = 7      feval = 28      geval = 8       Geval = 7
+Cholesky        4       fx* = 12.6906   |gx*| = 0.00000000      time = 0.330318 epochs = 7      feval = 25      geval = 8       Geval = 7
+Cholesky        8       fx* = 17.0561   |gx*| = 0.00000000      time = 0.384488 epochs = 8      feval = 29      geval = 9       Geval = 8
+Cholesky        16      fx* = 19.3248   |gx*| = 0.00000000      time = 0.847793 epochs = 18     feval = 60      geval = 19      Geval = 18
+Cholesky        32      fx* = 19.9725   |gx*| = 0.00000000      time = 0.472367 epochs = 10     feval = 33      geval = 11      Geval = 10
