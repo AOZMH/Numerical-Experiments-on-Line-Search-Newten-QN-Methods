@@ -46,6 +46,7 @@ class fib_searcher:
     
     def fib_search(self, partial_func, init_l, init_r, n_func_calls, verbose=False):
         # Fibonacci search on initial range [init_l, init_r]
+        # n_func_calls: total number of function calls per search
         assert(n_func_calls <= len(self.fib_seq))
         a, b = init_l, init_r
         state = 'start'
