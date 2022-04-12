@@ -136,12 +136,6 @@ Ackley函数具有全局最小值$x^* = (0,0,...,0), f(x^*)=0$，此外它还有
 
 \section{基本实验结果}
 本节比较上述2种Newton方法及3种拟Newton方法在Ackley函数上的收敛情况并进行分析。对于所有算法，通过标准正态分布随机选取长度为$n\in \{ 8, 16, 32, 64, 128 \}$的初始向量$x_0$，所有Newton型方法迭代最多100次，当满足$||g(x_k)|| < \epsilon \wedge |f(x_{k}) - f(x_{k-1})| < \epsilon, \epsilon=1e-8$时可提前终止迭代。所得结果如表\ref{tab:overall}所示。根据表中结果我们做出如下几点分析与讨论：
-\begin{itemize}
-  \item 阻尼Newton法收敛精度较差，基本无法达到$\epsilon=1e-8$的精度并在完成100次迭代后终止，其余方法均可实现收敛。进一步观察发现，阻尼Newton法所得$||g^*||$虽大于$\epsilon$但也较小，$f^*$也可较好地接近局部极小值，这说明该方法的正确性；如果继续迭代，发现阻尼Newton法会继续“抖动”，$||g^*||$始终无法低于$\epsilon$。为分析其原因，我记录了阻尼Newton的$d_k$并发现其常常并非下降方向，这是因为$G_k$有时并非正定，而遇到上升方向时x就会经历错误的更新进而导致“抖动”。这说明了修正$G_k$的重要性。
-  \item Cholesky修正Newton方法通过尝试正定化$G_k$而具有较好的收敛性，相比所有拟Newton方法迭代次数均显著减少，这说明了精确计算$G_k$确实能带来更快的收敛性。然而，尤其是n较大时，Newton法的CPU时间反而并不快于拟Newton法，这是因为计算Hessian矩阵需要更长的时间，从这个角度上拟Newton是具有意义的。
-  \item n趋势
-  \item 
-\end{itemize}
 
 \begin{table*}[h]
   \centering
@@ -189,6 +183,14 @@ Ackley函数具有全局最小值$x^* = (0,0,...,0), f(x^*)=0$，此外它还有
   \label{tab:overall}
 \end{table*}
 
+\begin{itemize}
+  \item 阻尼Newton法收敛精度较差，基本无法达到$\epsilon=1e-8$的精度并在完成100次迭代后终止，其余方法均可实现收敛。进一步观察发现，阻尼Newton法所得$||g^*||$虽大于$\epsilon$但也较小，$f^*$也可较好地接近局部极小值，这说明该方法的正确性；如果继续迭代，发现阻尼Newton法会继续“抖动”，$||g^*||$始终无法低于$\epsilon$。为分析其原因，我记录了阻尼Newton的$d_k$并发现其常常并非下降方向，这是因为$G_k$有时并非正定，而遇到上升方向时x就会经历错误的更新进而导致“抖动”。这说明了修正$G_k$的重要性。
+  \item Cholesky修正Newton方法通过尝试正定化$G_k$而具有较好的收敛性，相比所有拟Newton方法迭代次数均显著减少，这说明了精确计算$G_k$确实能带来更快的收敛，这展现了Newton方法二次收敛性的意义。
+  \item 随着n的增大，虽然Newton方法始终比拟Newton方法迭代次数少，但其CPU时间却逐渐落后于拟Newton方法，这是因为计算Hessian矩阵需要更长的时间（$O(n^2)$），只需计算f和g（$O(n)$）的拟Newton方法在大规模问题上有优势，这说明拟Newton方法对于问题规模有更好地伸缩性。注意，本实验设$g(x)$和$G(x)$都作为函数已知，对于一般数值计算情况，我们需要多个$f(x)$值对这二者进行数值近似，在这种情况下Newton方法相比拟Newton方法也会有更多的函数调用次数。
+  \item 拟Newton方法收敛到的函数值普遍小于Newton方法，由于Ackley函数有众多局部极小值，这并不能反映两类方法的收敛效果差别，但我推测这可能是因为拟Newton方法在迭代初期偏向负梯度方向，这使其更快的向$\mathbf{0}$更新，而Newton方法较快地趋向了最近的局部极小值，其函数值相比接近零向量的极小值更大。因此，在Ackley函数这一示例中，拟Newton方法似乎能取得比Newton方法更优的最小化结果，但这一结论并不普适：对于约靠近零向量局部极小值越大的函数，或许我们观察到的结论就会相反。
+  \item 在拟Newton方法中，BFGS通常比DFP有更优的数值表现，多次实验也发现BFGS比DFP的收敛更稳定；由于更简单的形式，SR1具有较快的执行速度。
+\end{itemize}
+
 
 \section{进一步分析}
 \subsection{不同线搜索算法比较}
@@ -197,97 +199,6 @@ Ackley函数具有全局最小值$x^* = (0,0,...,0), f(x^*)=0$，此外它还有
 
 \section{总结}
 
-\section{布拉}
-
-本报告处理词汇相关度问题，给定两个单词$w_1$和$w_2$，需要对其在语义上的相关程度给出0-5的打分，分数越高代表越相关。如表\ref{tab:dataset_eg}所示，在语义上有更强关联（同义词，指代同种或类似概念）的词对具有更高的打分。
-
-\begin{table*}[h]
-  \centering
-  \begin{tabular}{c c c}
-    \toprule
-    \bfseries Word 1 & \bfseries Word2 & \bfseries Similarity \\
-    \cmidrule(lr){1-3}
-    female & woman & 4.96 \\
-    finger & toe & 3.76 \\
-    flyer & justice & 1.18\\
-    \bottomrule
-  \end{tabular}
-  \caption{词汇相关度数据示例，数据源于MTURK-771数据集}
-  \label{tab:dataset_eg}
-\end{table*}
-
-\section{方法概览}
-本文使用基于字典和语料的两类方法计算关联度。
-\subsection{基于字典计算相关度}
-此类方法基于Wordnet，对于上述两个单词，分别在Wordnet种找到其同义集合，并根据这一对集合中的所有结点在Wordnet中的相对路径计算相似度（例如，集合间的最短路径越短，Path相似度越高）。
-
-在实现中，本文使用\texttt{nltk}构建Wordnet，通过其\texttt{synset}方法获取同义集，这样即可在集合上获取结点并利用\texttt{path\_similarity}、\texttt{res\_similarity}、\texttt{lin\_similarity}和\texttt{jcn\_similarity}方法计算相似度指标。特别地，注意到Path和Lin相似度都是0-1之间，直接将其乘5作为输出；由于Resnik和J-C可能产生正无穷值，实验中将所有无穷值替换为最大的有意义值，再线性放缩到0-5的区间中（例如最大值是12，则将所有值乘以5/12）作为输出。另外，由于后三种相似度需要在语料上统计频率，这里使用nltk默认的\texttt{brown}语料库。
-
-\subsection{基于语料计算相关度}
-本文使用word2vec算法在语料上训练词向量，在根据词向量的cosine相似度作为相关程度预测。具体地，本文使用gensim库训练词向量，语料使用text8。得到$w_1$和$w_2$的词向量$\mathbf{v_1}, \mathbf{v_2}$后，利用下式计算相似度。
-\[ sim(w_1, w_2) := \frac{\mathbf{v_1}\cdot \mathbf{v_2}}{|\mathbf{v_1}|\cdot |\mathbf{v_2}|} \]
-特别地，如果词表中不存在某单词，记其词向量为零向量。
-
-\subsection{评估方法}
-本文在MTURK-771上进行评估，将上述输出的相似度$sim_{pred}^i$与数据集所给的相似度$sim_{gold}^i$比较，通过如下方法计算均方误差MSE和Spearman相关系数。
-\[ MSE = \frac{1}{N} \sum\limits_{i=1}^{N} {(sim_{pred}^i-sim_{gold}^i)}^2 \]
-\[ Spearman = \frac{\sum\limits_{i=1}^N (sim_{pred}^i - \overline{sim_{pred}})(sim_{gold}^i - \overline{sim_{gold}})}{\sqrt{\sum\limits_{i=1}^N {(sim_{pred}^i - \overline{sim_{pred}})}^2  \sum\limits_{i=1}^N {(sim_{gold}^i - \overline{sim_{gold}})}^2}} \]
-
-
-\begin{table*}[h]
-  \centering
-  \begin{tabular}{c l c c}
-    \toprule
-    \bfseries Type & \bfseries Methods & \bfseries MSE & \bfseries Spearman\\
-    \cmidrule(lr){1-4}
-    \multirow{4}{*}{\bfseries I} &
-    Path  & 1.884 & .497 \\
-    & Resnik & 1.088 & .417 \\
-    & Lin & 1.846 & .493 \\
-    & J-C & 7.321 & .483 \\
-    \cmidrule(lr){1-4}
-    \multirow{1}{*}{\bfseries II} &
-    Word2vec & \bfseries 0.867 & \bfseries .506 \\
-    \bottomrule
-\end{tabular}
-  \caption{各类方法的表现。其中I和II分别代表基于字典和基于语料库的两类方法。}
-  \label{tab:overall_eval}
-\end{table*}
-
-\section{结果分析}
-\subsection{总体结果比较}
-上述方法所得实验结果如表\ref{tab:overall_eval}所示，可见基于语料的Word2vec具有最优的表现，超过了所有基于字典的方法。在字典类方法中，Path和Lin相似度相对最优且较为接近，在MSE和Spearman两个指标中分别占优。
-
-\subsection{结果分析}
-\begin{itemize}
-  \item 基于语料的word2vec方法效果好于所有本文中的字典类方法，这体现了通过模型学习语义的潜力，进一步扩充此方法可能达到更好的效果。
-  \item 观察表\ref{tab:overall_eval}可以发现，J-C方法在MSE上表现不佳，但是Spearman相关性并不差，为解释这一点，图\ref{fig:distrib}展示了Lin、Word2vec方法所得的相似性分数分布及正确相似性打分分布。可见，Lin所得的得分普遍偏高，但可能不同词对的打分相对高低仍保持正确，这使得其MSE较高，但由于趋势与正确答案相近，Spearman相关性仍较高。同时，Word2vec得分分布较好的拟合了正确答案，因此在两个指标中都较好。这提示我们，MSE与Spearman虽都是可行的评估指标，但二者重视的方面不同（MSE重视打分分布，Spearman重视相对大小关系及趋势），使用多种指标评估我们的方法有助于更好的理解模型表现。
-\end{itemize}
-
-
-\begin{figure}[h]
-  % \centering
-  \begin{subfigure}{.42\textwidth}
-    \includegraphics[width=1.\linewidth,right]{pics/gold.pdf}
-    \caption{}
-    \label{fig:gold}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}{.42\textwidth}
-    \includegraphics[width=1.\linewidth,left]{pics/lin.pdf}
-    \caption{}
-    \label{fig:lin}
-  \end{subfigure}
-  % \hfill
-  \begin{subfigure}{.42\textwidth}
-    \centering
-    \includegraphics[width=1.\linewidth]{pics/w2v.pdf}
-    \caption{}
-    \label{fig:w2v}
-  \end{subfigure}%
-  \caption{相似性得分分布}
-  \label{fig:distrib}
-  \end{figure}
 
 
 %end{CJK*}
