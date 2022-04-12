@@ -1,0 +1,55 @@
+================= Scale of X is 8 ================
+Damp Newton     FIB     fx* = 6.5588    |gx*| = 0.00000122      time = 1.101484 epochs = 99     feval = 2520    geval = 100     Geval = 100
+Damp Newton     GLL     fx* = 6.2981    |gx*| = 0.00000231      time = 0.668215 epochs = 99     feval = 301     geval = 100     Geval = 100
+Cholesky        FIB     fx* = 6.8043    |gx*| = 0.00000000      time = 0.181514 epochs = 15     feval = 402     geval = 16      Geval = 15
+Cholesky        GLL     fx* = 6.8043    |gx*| = 0.00000000      time = 0.116627 epochs = 15     feval = 58      geval = 16      Geval = 15
+Quasi SR1       FIB     fx* = 6.0174    |gx*| = 0.00000000      time = 0.192337 epochs = 18     feval = 501     geval = 19      Geval = 0
+Quasi SR1       GLL     fx* = 6.3873    |gx*| = 0.00000000      time = 0.021943 epochs = 24     feval = 54      geval = 25      Geval = 0
+Quasi DFP       FIB     fx* = 5.9188    |gx*| = 0.00000001      time = 0.234371 epochs = 23     feval = 629     geval = 24      Geval = 0
+Quasi DFP       GLL     fx* = 1.8400    |gx*| = 0.00000000      time = 0.106717 epochs = 98     feval = 202     geval = 99      Geval = 0
+Quasi BFGS      FIB     fx* = 4.8841    |gx*| = 0.00000001      time = 0.223402 epochs = 25     feval = 701     geval = 26      Geval = 0
+Quasi BFGS      GLL     fx* = 5.8176    |gx*| = 0.00000001      time = 0.049868 epochs = 37     feval = 89      geval = 38      Geval = 0
+================= Scale of X is 16 ================
+Damp Newton     FIB     fx* = 7.2584    |gx*| = 0.00000113      time = 1.993105 epochs = 99     feval = 2530    geval = 100     Geval = 100
+Damp Newton     GLL     fx* = 5.5732    |gx*| = 0.00000098      time = 1.206306 epochs = 99     feval = 316     geval = 100     Geval = 100
+Cholesky        FIB     fx* = 20.0000   |gx*| = 0.00000000      time = 0.199467 epochs = 8      feval = 229     geval = 9       Geval = 8
+Cholesky        GLL     fx* = 6.5595    |gx*| = 0.00000000      time = 0.100732 epochs = 10     feval = 40      geval = 11      Geval = 10
+Quasi SR1       FIB     fx* = 5.1419    |gx*| = 0.00000000      time = 0.165556 epochs = 22     feval = 621     geval = 23      Geval = 0
+Quasi SR1       GLL     fx* = 4.3777    |gx*| = 0.00000001      time = 0.040893 epochs = 40     feval = 84      geval = 41      Geval = 0
+Quasi DFP       FIB     fx* = 4.6044    |gx*| = 0.00000000      time = 0.279252 epochs = 33     feval = 909     geval = 34      Geval = 0
+Quasi DFP       GLL     fx* = 4.3009    |gx*| = 0.17906255      time = 0.131201 epochs = 99     feval = 201     geval = 100     Geval = 0
+Quasi BFGS      FIB     fx* = 4.5308    |gx*| = 0.00000000      time = 0.278145 epochs = 37     feval = 1015    geval = 38      Geval = 0
+Quasi BFGS      GLL     fx* = 2.5799    |gx*| = 0.00000000      time = 0.083778 epochs = 68     feval = 160     geval = 69      Geval = 0
+================= Scale of X is 32 ================
+Damp Newton     FIB     fx* = 7.6719    |gx*| = 0.00000044      time = 2.374713 epochs = 99     feval = 2538    geval = 100     Geval = 100
+Damp Newton     GLL     fx* = 7.8692    |gx*| = 0.00000035      time = 1.483897 epochs = 99     feval = 316     geval = 100     Geval = 100
+Cholesky        FIB     fx* = 6.0415    |gx*| = 0.00000000      time = 0.107739 epochs = 6      feval = 171     geval = 7       Geval = 6
+Cholesky        GLL     fx* = 6.3206    |gx*| = 0.00000000      time = 0.230124 epochs = 18     feval = 62      geval = 19      Geval = 18
+Quasi SR1       FIB     fx* = 4.7820    |gx*| = 0.00000000      time = 0.145610 epochs = 22     feval = 611     geval = 23      Geval = 0
+Quasi SR1       GLL     fx* = 6.0415    |gx*| = 0.00000000      time = 0.026927 epochs = 31     feval = 66      geval = 32      Geval = 0
+Quasi DFP       FIB     fx* = 4.0502    |gx*| = 0.13788637      time = 0.542085 epochs = 99     feval = 2452    geval = 100     Geval = 0
+Quasi DFP       GLL     fx* = 4.1600    |gx*| = 0.41032783      time = 0.083768 epochs = 99     feval = 200     geval = 100     Geval = 0
+Quasi BFGS      FIB     fx* = 4.6046    |gx*| = 0.00000001      time = 0.185477 epochs = 32     feval = 881     geval = 33      Geval = 0
+Quasi BFGS      GLL     fx* = 2.7287    |gx*| = 0.00000001      time = 0.066825 epochs = 70     feval = 150     geval = 71      Geval = 0
+================= Scale of X is 64 ================
+Damp Newton     FIB     fx* = 7.9248    |gx*| = 0.00001977      time = 3.097358 epochs = 99     feval = 2546    geval = 100     Geval = 100
+Damp Newton     GLL     fx* = 7.8523    |gx*| = 0.00000027      time = 2.713819 epochs = 99     feval = 312     geval = 100     Geval = 100
+Cholesky        FIB     fx* = 6.2299    |gx*| = 0.00000000      time = 0.294925 epochs = 8      feval = 229     geval = 9       Geval = 8
+Cholesky        GLL     fx* = 7.1265    |gx*| = 0.00000000      time = 0.381282 epochs = 16     feval = 59      geval = 17      Geval = 16
+Quasi SR1       FIB     fx* = 5.4249    |gx*| = 0.00000001      time = 0.161603 epochs = 28     feval = 789     geval = 29      Geval = 0
+Quasi SR1       GLL     fx* = 6.0415    |gx*| = 0.00000000      time = 0.015953 epochs = 23     feval = 47      geval = 24      Geval = 0
+Quasi DFP       FIB     fx* = 6.0536    |gx*| = 0.00000000      time = 0.153594 epochs = 27     feval = 721     geval = 28      Geval = 0
+Quasi DFP       GLL     fx* = 3.1914    |gx*| = 0.11929343      time = 0.076830 epochs = 99     feval = 202     geval = 100     Geval = 0
+Quasi BFGS      FIB     fx* = 6.0415    |gx*| = 0.00000000      time = 0.109704 epochs = 19     feval = 523     geval = 20      Geval = 0
+Quasi BFGS      GLL     fx* = 5.4676    |gx*| = 0.00000001      time = 0.037870 epochs = 39     feval = 90      geval = 40      Geval = 0
+================= Scale of X is 128 ================
+Damp Newton     FIB     fx* = 8.4829    |gx*| = 0.00006255      time = 6.715091 epochs = 99     feval = 2560    geval = 100     Geval = 100
+Damp Newton     GLL     fx* = 8.6563    |gx*| = 0.00000019      time = 6.202327 epochs = 99     feval = 323     geval = 100     Geval = 100
+Cholesky        FIB     fx* = 7.1266    |gx*| = 0.00000001      time = 0.462615 epochs = 9      feval = 250     geval = 10      Geval = 9
+Cholesky        GLL     fx* = 7.9430    |gx*| = 0.00000000      time = 0.317574 epochs = 7      feval = 33      geval = 8       Geval = 7
+Quasi SR1       FIB     fx* = 6.8141    |gx*| = 0.00000001      time = 0.112899 epochs = 18     feval = 495     geval = 19      Geval = 0
+Quasi SR1       GLL     fx* = 6.6273    |gx*| = 0.00000000      time = 0.045769 epochs = 35     feval = 81      geval = 36      Geval = 0
+Quasi DFP       FIB     fx* = 6.8141    |gx*| = 0.00000001      time = 0.108238 epochs = 17     feval = 465     geval = 18      Geval = 0
+Quasi DFP       GLL     fx* = 3.3872    |gx*| = 0.13988989      time = 0.119080 epochs = 99     feval = 209     geval = 100     Geval = 0
+Quasi BFGS      FIB     fx* = 6.8141    |gx*| = 0.00000000      time = 0.131014 epochs = 19     feval = 517     geval = 20      Geval = 0
+Quasi BFGS      GLL     fx* = 6.8680    |gx*| = 0.00000001      time = 0.039863 epochs = 23     feval = 47      geval = 24      Geval = 0

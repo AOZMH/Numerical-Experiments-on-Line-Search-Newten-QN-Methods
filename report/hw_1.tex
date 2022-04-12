@@ -194,11 +194,47 @@ Ackley函数具有全局最小值$x^* = (0,0,...,0), f(x^*)=0$，此外它还有
 
 \section{进一步分析}
 \subsection{不同线搜索算法比较}
+本节比较前文所述的两种线搜索算法，表\ref{tab:line_search}展示了GLL和Fibonacci两种线搜索在BFGS上的实验效果（其他设定与前文相同）。
+
+\begin{table*}[h]
+  \centering
+  \begin{tabular}{c l c c c c c c c}
+    \toprule
+    \bfseries n & \bfseries Methods & \boldmath{$f(x^*)$} & \boldmath $||g(x^*)||$ & \bfseries Time(s) & \bfseries niter & \bfseries feval & \bfseries geval & \bfseries Geval \\
+    \cmidrule(lr){1-9}
+    \multirow{2}{*}{8} &
+    Fibonacci & 4.8841 & $<\epsilon$ & 0.2234 & 25 & 701 & 26 & 0 \\
+    & GLL  & 5.8176 & $<\epsilon$ & 0.0499 & 37 & 89 & 38 & 0 \\
+    \cmidrule(lr){1-9}
+    \multirow{2}{*}{16} &
+    Fibonacci & 4.5308 & $<\epsilon$ & 0.2781 & 37 & 1015 & 38 & 0 \\
+    & GLL  & 2.5799 & $<\epsilon$ & 0.0838 & 68 & 160 & 69 & 0 \\
+    \cmidrule(lr){1-9}
+    \multirow{2}{*}{32} &
+    Fibonacci & 4.6046 & $<\epsilon$ & 0.1855 & 32 & 881 & 33 & 0 \\
+    & GLL  & 2.7287 & $<\epsilon$ & 0.0668 & 70 & 150 & 71 & 0 \\
+    \cmidrule(lr){1-9}
+    \multirow{2}{*}{64} &
+    Fibonacci & 6.0415 & $<\epsilon$ & 0.1097 & 19 & 523 & 20 & 0 \\
+    & GLL  & 5.4676 & $<\epsilon$ & 0.0379 & 39 & 90 & 40 & 0 \\
+    \cmidrule(lr){1-9}
+    \multirow{2}{*}{128} &
+    Fibonacci & 6.8141 & $<\epsilon$ & 0.1310 & 19 & 517 & 20 & 0 \\
+    & GLL  & 6.8680 & $<\epsilon$ & 0.0399 & 23 & 47 & 24 & 0 \\
+    \bottomrule
+  \end{tabular}
+  \caption{GLL与Fibonacci两种线搜索方法在BFGS上的比较。$\epsilon=1e-8$。}
+  \label{tab:line_search}
+\end{table*}
+
+可见，两算法均可实现收敛（$||g^*||<\epsilon$）；在迭代次数方面，精确线搜索的Fibonacci方法更少，这是因为精确的搜索使每步的步长选取更有效；而在CPU时间、函数调用次数等方面，非精确线搜索GLL方法显著优于精确线搜索，这是因为其每步无需全部完成Fibonacci法的20次函数调用，只需通过指数降低$\alpha$满足GLL准则，从表中可见平均每次搜索仅需1$\sim$2次函数调用，而显著减少的函数调用提高了其运行效率，让它即便需要更多的迭代轮数仍保持更低的耗时。这一结果体现了非精确线搜索的典型特征：通常迭代轮数更多，但函数调用次数显著减少，从而提升算法性能。
 
 \subsection{初始值对收敛性的影响}
 
-\section{总结}
 
+
+\section{总结}
+本文比较了多种Newton和拟Newton方法在Ackley函数上的数值表现，分析了二者的优劣；本文还针对不同线搜索策略、不同初始迭代值对收敛过程的影响进行了数值实验及分析，为未来在不同问题上应用各类技巧给出了一些经验性分析。
 
 
 %end{CJK*}
