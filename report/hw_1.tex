@@ -135,20 +135,57 @@ Ackley函数具有全局最小值$x^* = (0,0,...,0), f(x^*)=0$，此外它还有
 本实验实现了三种经典拟Newton方法：SR1，DFP和BFGS，使用$H_k$的更新公式以避免额外的矩阵求逆开销，公式的形式与教材中完全相同，这里不再赘述。
 
 \section{基本实验结果}
-本节比较上述2种Newton方法及3种拟Newton方法在Ackley函数上的收敛情况并进行分析。对于所有算法，通过标准正态分布随机选取长度为$n\in \{ 8, 16, 32, 64, 128 \}$的初始向量$x_0$，所有Newton型方法迭代最多100次，当满足$||g(x_k)|| < \epsilon \wedge |f(x_{k}) - f(x_{k-1})| < \epsilon, \epsilon=1e-8$时可提前终止迭代。所得结果如表\ref{tab:overall}所示。
+本节比较上述2种Newton方法及3种拟Newton方法在Ackley函数上的收敛情况并进行分析。对于所有算法，通过标准正态分布随机选取长度为$n\in \{ 8, 16, 32, 64, 128 \}$的初始向量$x_0$，所有Newton型方法迭代最多100次，当满足$||g(x_k)|| < \epsilon \wedge |f(x_{k}) - f(x_{k-1})| < \epsilon, \epsilon=1e-8$时可提前终止迭代。所得结果如表\ref{tab:overall}所示。根据表中结果我们做出如下几点分析与讨论：
+\begin{itemize}
+  \item 阻尼Newton法收敛精度较差，基本无法达到$\epsilon=1e-8$的精度并在完成100次迭代后终止，其余方法均可实现收敛。进一步观察发现，阻尼Newton法所得$||g^*||$虽大于$\epsilon$但也较小，$f^*$也可较好地接近局部极小值，这说明该方法的正确性；如果继续迭代，发现阻尼Newton法会继续“抖动”，$||g^*||$始终无法低于$\epsilon$。为分析其原因，我记录了阻尼Newton的$d_k$并发现其常常并非下降方向，这是因为$G_k$有时并非正定，而遇到上升方向时x就会经历错误的更新进而导致“抖动”。这说明了修正$G_k$的重要性。
+  \item Cholesky修正Newton方法通过尝试正定化$G_k$而具有较好的收敛性，相比所有拟Newton方法迭代次数均显著减少，这说明了精确计算$G_k$确实能带来更快的收敛性。然而，尤其是n较大时，Newton法的CPU时间反而并不快于拟Newton法，这是因为计算Hessian矩阵需要更长的时间，从这个角度上拟Newton是具有意义的。
+  \item n趋势
+  \item 
+\end{itemize}
 
 \begin{table*}[h]
   \centering
-  \begin{tabular}{c c c}
+  \begin{tabular}{c l c c c c c c c}
     \toprule
-    \bfseries Word 1 & \bfseries Word2 & \bfseries Similarity \\
-    \cmidrule(lr){1-3}
-    female & woman & 4.96 \\
-    finger & toe & 3.76 \\
-    flyer & justice & 1.18\\
+    \bfseries n & \bfseries Methods & \boldmath{$f(x^*)$} & \boldmath $||g(x^*)||$ & \bfseries Time(s) & \bfseries niter & \bfseries feval & \bfseries geval & \bfseries Geval \\
+    \cmidrule(lr){1-9}
+    \multirow{5}{*}{8} &
+    DN & 6.3400 & 1.72e-6 & 0.9913 & 100 & 2250 & 100 & 100 \\
+    & Cholesky  & 6.0174 & $<\epsilon$ & 0.0967 & 8 & 221 & 9 & 8 \\
+    & SR1 & 2.5799 & $<\epsilon$ & 0.3142 & 40 & 1127 & 41 & 0 \\
+    & DFP & 5.7135 & $<\epsilon$ & 0.1194 & 17 & 475 & 18 & 0 \\
+    & BFGS & 1.2967 & $<\epsilon$ & 0.3226 & 44 & 1243 & 45 & 0 \\
+    \cmidrule(lr){1-9}
+    \multirow{5}{*}{16} &
+    DN & 8.2490 & 6.6e-7 & 1.3399 & 100 & 2576 & 100 & 100 \\
+    & Cholesky  & 7.4247 & $<\epsilon$ & 0.0789 & 6 & 177 & 7 & 6 \\
+    & SR1 & 7.1448 & $<\epsilon$ & 0.1835 & 31 & 881 & 32 & 0 \\
+    & DFP & 8.1069 & $<\epsilon$ & 0.2173 & 35 & 995 & 36 & 0 \\
+    & BFGS & 7.4247 & $<\epsilon$ & 0.1423 & 24 & 665 & 25 & 0 \\
+    \cmidrule(lr){1-9}
+    \multirow{5}{*}{32} &
+    DN & 5.1104 & 2.4e-7 & 1.9412 & 100 & 2640 & 100 & 100 \\
+    & Cholesky & 6.1600 & $<\epsilon$ & 0.1519 & 8 & 231 & 9 & 8 \\
+    & SR1 & 6.1600 & $<\epsilon$ & 0.1147 & 19 & 521 & 20 & 0 \\
+    & DFP & 2.1522 & $<\epsilon$ & 0.2753 & 49 & 1311 & 50 & 0 \\
+    & BFGS & 4.7119 & $<\epsilon$ & 0.1764 & 30 & 823 & 31 & 0 \\
+    \cmidrule(lr){1-9}
+    \multirow{5}{*}{64} &
+    DN & 8.0151 & 1.23e-5 & 3.2566 & 100 & 2524 & 100 & 100 \\
+    & Cholesky & 6.7745 & $<\epsilon$ & 0.2441 & 8 & 229 & 9 & 8 \\
+    & SR1 & 6.5910 & $<\epsilon$ & 0.0888 & 15 & 417 & 16 & 0 \\
+    & DFP & 6.5910 & $<\epsilon$ & 0.1147 & 20 & 533 & 21 & 0 \\
+    & BFGS & 6.5910 & $<\epsilon$ & 0.0977 & 15 & 411 & 16 & 0 \\
+    \cmidrule(lr){1-9}
+    \multirow{5}{*}{128} &
+    DN & 6.8139 & 7e-8 & 5.9922 & 100 & 2630 & 100 & 100 \\
+    & Cholesky & 5.8812 & $<\epsilon$ & 0.5655 & 10 & 285 & 11 & 10 \\
+    & SR1 & 4.5954 & $<\epsilon$ & 0.2074 & 30 & 839 & 31 & 0 \\
+    & DFP & 5.7724 & $<\epsilon$ & 0.1311 & 20 & 551 & 21 & 0 \\
+    & BFGS & 5.7724 & $<\epsilon$ & 0.1326 & 19 & 525 & 20 & 0 \\
     \bottomrule
   \end{tabular}
-  \caption{Newton型方法在Ackley函数上的比较}
+  \caption{Newton型方法在Ackley函数上的比较。所有算法均使用Fibonacci法进行精确线搜索。表中DN指阻尼牛顿法（Damped Newton），Cholesky指基于Cholesky分解的修正Newton方法；Time指CPU时间，niter为迭代轮数，feval、geval和Geval分别指Ackley函数、一阶导数及hessian矩阵的计算次数。$\epsilon=1e-8$。}
   \label{tab:overall}
 \end{table*}
 
