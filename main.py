@@ -6,7 +6,7 @@ from ackley_func import ackley_func
 from line_search import fib_searcher, gll_searcher
 from newton import damp_newton_method
 from quasi_newton import quasi_newton_method, sr1_update_func, dfp_update_func, bfgs_update_func
-from conjugate_grad import conjugate_gradient_two, fr_func, prp_func
+from conjugate_grad import conjugate_gradient_two, fr_func, prp_func, conjugate_gradient_powell_three
 
 
 def newton_test(x0, use_cholesky_correction, line_searcher, trial_name):
@@ -42,11 +42,14 @@ def q_newton_test(x0, updater, line_searcher, trial_name):
     print('{}\tfx* = {:.4f}\t|gx*| = {:.8f}\ttime = {:.6f}\tepochs = {}\t{}'.format(trial_name, f_star, g_norm, elapsed_time, epochs, eval_info))
 
 
-def conjugate_gradient_test(x0, beta_func, line_searcher, trial_name):
+def conjugate_gradient_test(x0, beta_func, line_searcher, trial_name, two_or_three='two'):
     # test conjugate gradient methods
     func = ackley_func()
     t0 = time.time()
-    x_star, epochs = conjugate_gradient_two(func, func.g_ackley_func, func.G_ackley_func, x0, beta_func, line_searcher, eps=1e-8, n_epochs=300)
+    if two_or_three == 'two':
+        x_star, epochs = conjugate_gradient_two(func, func.g_ackley_func, x0, beta_func, line_searcher, eps=1e-8, n_epochs=300)
+    elif two_or_three == 'three':
+        x_star, epochs = conjugate_gradient_powell_three(func, func.g_ackley_func, x0, line_searcher, eps=1e-8, n_epochs=300)
 
     # output statistics
     elapsed_time = time.time() - t0
@@ -111,7 +114,7 @@ def main_init_value():
 def main_hw2():
     fib_search_inst = gll_searcher(gamma=1e-3, sigma=0.5, window=5, a0=1)
     x_scales = [8, 16, 32, 64, 128]
-    #x_scales = [32]
+    x_scales = [100, 200, 300, 400, 500]
     for x_scale in x_scales:
         print('================= Scale of X is {} ================'.format(x_scale))
         #x0 = torch.randn(x_scale) * 32.768  # Ackley's function's range
@@ -123,6 +126,7 @@ def main_hw2():
         q_newton_test(x0, bfgs_update_func, fib_search_inst, 'Quasi BFGS')
         conjugate_gradient_test(x0, fr_func, fib_search_inst, 'FR Conjugate')
         conjugate_gradient_test(x0, prp_func, fib_search_inst, 'PRP Conjugate')
+        conjugate_gradient_test(x0, None, fib_search_inst, 'Powell restart', 'three')
 
 
 if __name__ == '__main__':
