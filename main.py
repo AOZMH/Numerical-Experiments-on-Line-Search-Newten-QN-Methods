@@ -30,7 +30,7 @@ def q_newton_test(x0, updater, line_searcher, trial_name):
     func = ackley_func()
     H0 = np.eye(len(x0))
     t0 = time.time()
-    x_star, epochs = quasi_newton_method(func, func.g_ackley_func, func.G_ackley_func, x0, H0, line_searcher, eps=1e-8, Hk_update_func=updater)
+    x_star, epochs = quasi_newton_method(func, func.g_ackley_func, func.G_ackley_func, x0, H0, line_searcher, eps=1e-8, Hk_update_func=updater, lbfgs_m=6)
 
     # output statistics
     elapsed_time = time.time() - t0
@@ -124,6 +124,7 @@ def main_hw2():
         q_newton_test(x0, sr1_update_func, fib_search_inst, 'Quasi SR1')
         #q_newton_test(x0, dfp_update_func, fib_search_inst, 'Quasi DFP')
         q_newton_test(x0, bfgs_update_func, fib_search_inst, 'Quasi BFGS')
+        q_newton_test(x0, 'LBFGS', fib_search_inst, 'L-BFGS\t')
         conjugate_gradient_test(x0, fr_func, fib_search_inst, 'FR Conjugate')
         conjugate_gradient_test(x0, prp_func, fib_search_inst, 'PRP Conjugate')
         conjugate_gradient_test(x0, None, fib_search_inst, 'Powell restart', 'three')

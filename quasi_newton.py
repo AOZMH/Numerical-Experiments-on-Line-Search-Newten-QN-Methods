@@ -2,7 +2,7 @@ from tabnanny import verbose
 import numpy as np
 
 
-def quasi_newton_method(func, g_func, G_func, x0, H0, line_searcher, eps=1e-8, n_epochs=100, Hk_update_func=None, verbose=False):
+def quasi_newton_method(func, g_func, G_func, x0, H0, line_searcher, eps=1e-8, n_epochs=100, Hk_update_func=None, verbose=False, lbfgs_m=None):
     # The framework of quasi-newton method
     # x0: initial value of x
     # H0: initial positive-definite value of Hk
@@ -12,6 +12,8 @@ def quasi_newton_method(func, g_func, G_func, x0, H0, line_searcher, eps=1e-8, n
 
     xk, last_xk, last_fk, Hk, last_gk = x0, None, 1000000000, H0, None
     prev_fks = []
+    if Hk_update_func == 'LBFGS':   # memory buffer of len at most m for L-BFGS
+        s_history, y_history = [], []
 
     for epoch in range(n_epochs):
         # calculate gk & fk
@@ -20,18 +22,31 @@ def quasi_newton_method(func, g_func, G_func, x0, H0, line_searcher, eps=1e-8, n
         if np.linalg.norm(fk - last_fk) < eps and np.linalg.norm(gk) < eps:
             break
         
-        # update Hk
         if epoch > 0:
             sk = xk - last_xk   # sk = xk+1 - xk
             yk = gk - last_gk   # gk = gk+1 - gk
-            Hk = Hk_update_func(Hk, sk.numpy(), yk.numpy())
+            if Hk_update_func == 'LBFGS':
+                # L-BFGS does not need explicit Hk
+                s_history.append(sk.numpy())
+                y_history.append(yk.numpy())
+                if len(s_history) > lbfgs_m:
+                    #s_history = s_history[1:]
+                    #y_history = y_history[1:]
+                    s_history.pop(0)
+                    y_history.pop(0)
+                rk = two_loop_recursion(gk, H0, s_history, y_history)
+                dk = -rk
+            else:
+                # update Hk
+                Hk = Hk_update_func(Hk, sk.numpy(), yk.numpy())
+                # dk = -Hk*gk
+                dk = -np.dot(Hk, gk)
+        else:
+            dk = -np.dot(H0, gk)
         last_xk = xk
         last_fk = fk
         last_gk = gk
         prev_fks.append(fk)
-
-        # dk = -Hk*gk
-        dk = -np.dot(Hk, gk)
 
         # line search for alpha_k
         partial_func = func.get_partial_alpha(xk, dk)
@@ -81,3 +96,18 @@ def bfgs_update_func(Hk, sk, yk):
     mat1 = I - sy_matrix / ys_dot
     mat2 = I - ys_matrix / ys_dot
     return np.matmul(np.matmul(mat1, Hk), mat2) + ss_matrix / ys_dot
+
+
+def two_loop_recursion(gk, H0, s_history, y_history):
+    # Two-loop recursion for L-BFGS, calculate residual direction rk give m previous sk & yk information
+    alphas, qk = [], gk
+    for ix in range(len(s_history)):
+        alpha = np.dot(s_history[- ix - 1], qk) / np.dot(y_history[- ix - 1], s_history[- ix - 1])
+        qk = qk - alpha * y_history[- ix - 1]
+        alphas.append(alpha)
+    
+    r = np.dot(H0, qk)
+    for ix in range(len(s_history)):
+        beta = np.dot(y_history[ix], r) / np.dot(y_history[ix], s_history[ix])
+        r = r + s_history[ix] * (alphas[- ix - 1] - beta)
+    return r
