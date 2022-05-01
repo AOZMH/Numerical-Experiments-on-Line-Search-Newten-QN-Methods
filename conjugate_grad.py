@@ -1,6 +1,6 @@
 from operator import gt
 import numpy as np
-np.seterr(all='raise')
+#np.seterr(all='raise')
 
 
 def conjugate_gradient_two(func, g_func, x0, beta_func, line_searcher, eps=1e-8, n_epochs=100, verbose=False):

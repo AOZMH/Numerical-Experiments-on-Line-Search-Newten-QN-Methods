@@ -25,7 +25,7 @@ def back_forth_test():
     import torch
     func = ackley_func()
     xk = torch.randn(128) / 10
-    dk = -func.g_ackley_func(xk)
+    dk = -func.g_func(xk)
     partial_func = func.get_partial_alpha(xk, dk)
     #print(xk)
     res = back_forth(partial_func)
@@ -91,7 +91,7 @@ def fib_test():
     import torch
     func = ackley_func()
     xk = torch.randn(128) / 2
-    dk = -func.g_ackley_func(xk)
+    dk = -func.g_func(xk)
     #dk = -xk
     partial_func = func.get_partial_alpha(xk, dk)
     fib_search_inst = fib_searcher()
@@ -137,7 +137,7 @@ def gd_test():
     fib_search_inst = fib_searcher()
     
     for ix in range(100):
-        dk = -func.g_ackley_func(xk)
+        dk = -func.g_func(xk)
         partial_func = func.get_partial_alpha(xk, dk)
         init_l, init_r = back_forth(partial_func)
         search_res = fib_search_inst.fib_search(partial_func, init_l, init_r, 50)

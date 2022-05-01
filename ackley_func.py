@@ -2,19 +2,13 @@
 import numpy as np
 import torch
 
+from base_function import base_func
 
-class ackley_func:
+
+class ackley_func(base_func):
 
     def __init__(self):
-        self.reset()
-    
-    def reset(self, func_calls=0, g_calls=0, G_calls=0):
-        self.func_calls = func_calls
-        self.g_calls = g_calls
-        self.G_calls = G_calls
-    
-    def get_eval_infos(self):
-        return 'feval = {}\tgeval = {}\tGeval = {}'.format(self.func_calls, self.g_calls, self.G_calls)
+        super(ackley_func, self).__init__()
     
     def __call__(self, x):
         # Ackley's function
@@ -26,7 +20,7 @@ class ackley_func:
         v2 = torch.exp(torch.mean(torch.cos(2 * np.pi * x)))
         return v1 - v2 + 20 + np.e
     
-    def g_ackley_func(self, x):
+    def g_func(self, x):
         # Gradient of ackley's function
         # Input: x, an n-dim float vector
         # Output: g(x), an n-dim float vector
@@ -37,18 +31,6 @@ class ackley_func:
         mean_cos = torch.exp(torch.mean(torch.cos(2 * np.pi * x)))
         v2 = mean_cos * 2 * np.pi / len(x) * torch.sin(2 * np.pi * x)
         return v1 + v2
-
-    def G_ackley_func(self, x):
-        # Hessian of ackley's function
-        # Input: x, an n-dim float vector
-        # Output: G(x), an n*n float matrix
-        self.G_calls += 1
-
-        return torch.autograd.functional.hessian(self.__call__, x)
-    
-    def get_partial_alpha(self, xk, dk):
-        # Get 1-dim function of a for line search
-        return lambda alpha : self(xk + dk * alpha)
 
 
 def ackley_test(x):
@@ -69,7 +51,7 @@ def main():
         assert(abs(delta) < 2e-6), delta
         
         res.backward()
-        delta_g = torch.norm(a.grad - ackley_func_inst.g_ackley_func(a))       
+        delta_g = torch.norm(a.grad - ackley_func_inst.g_func(a))       
         assert(abs(delta) < 2e-6), delta
 
 
