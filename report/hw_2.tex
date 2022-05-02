@@ -138,6 +138,14 @@ Rastrigin函数形式为：
 本节分别在三个测试函数上比较各方法的实验效果。在实验中，均使用20次迭代的Fibonacci搜索进行精确线搜索；作为基准方法，我们同时与基于Cholesky分解的修正Newton方法、BFGS拟Newton方法进行比较。
 
 \subsection{Ackley函数上的实验}
+表\ref{tab:ackley}总结了上述方法在Ackley函数上的结果。对此可做如下分析：
+\begin{itemize}
+  \item 对比拟Newton方法和共轭梯度类方法，可以发现前者总体优于后者。所有拟Newton方法在所有规模下均实现收敛，而三类共轭梯度类方法常常无法收敛，达到最大循环次数退出。虽然后者的一阶性具有更高性能，但由于收敛性不佳，往往耗费更多迭代次数，这反而影响了它的效率。
+  \item 共轭梯度类方法在正定二次函数中具有很好的理论表现，但在此处实际表现不佳，说明了实际问题的复杂性，我们通常不能期望在一小类问题上具有良好理论基础的方法总是具有很好的泛化能力，实际上，共轭梯度法并不比拟Newton法更通用。
+  \item 在拟Newton方法中，L-BFGS相比BFGS具有更优的数值表现，这体现在它具有更快的运行速度。二者虽然总迭代次数相仿（L-BFGS有时反而更多），但舍弃Hessian矩阵的存储使L-BFGS效率更高，总体运行时间显著低于BFGS。
+  \item 在共轭梯度类方法中，首先PRP方法显著优于FR方法，这体现在FR方法最终退出时$g^*$往往处在1e-1量级，这通常是不可接受的；作为对比，PRP虽经常无法达到$\epsilon$精度，但也有1e-6的精度，可以接受。在正定二次函数中，PRP与FR等价；但在我们的实际应用中，二者性能差别很大，这说明最优化方法往往需要更多的实践分析。
+  \item 其次，Beale-Powell三项方法虽属于对PRP的改进，但在Ackley函数上体现的数值表现差别并不明显，它在多数情况下能取得比PRP更优的精度，但此时需要消耗更多的CPU时间，实际中需权衡时间效率与精度选择两算法。
+\end{itemize}
 
 \begin{table*}[h]
   \centering
@@ -181,17 +189,11 @@ Rastrigin函数形式为：
     & BFGS & 5.7724 & $<\epsilon$ & 0.1326 & 19 & 525 & 20 & 0 \\
     \bottomrule
   \end{tabular}
-  \caption{Newton型方法在Ackley函数上的比较。所有算法均使用Fibonacci法进行精确线搜索。表中DN指阻尼牛顿法（Damped Newton），Cholesky指基于Cholesky分解的修正Newton方法；Time指CPU时间，niter为迭代轮数，feval、geval和Geval分别指Ackley函数、一阶导数及hessian矩阵的计算次数。$\epsilon=1e-8$。}
-  \label{tab:overall}
+  \caption{各类方法在Ackley函数上的比较。所有算法均使用Fibonacci法进行精确线搜索。表中BP指基于Beale-Powell restart的三项方法，其余方法见前述介绍；Time指CPU时间，niter为迭代轮数，feval、geval和Geval分别指愿函数、一阶导数及hessian矩阵的计算次数。$\epsilon=1e-8$。}
+  \label{tab:ackley}
 \end{table*}
 
-\begin{itemize}
-  \item 阻尼Newton法收敛精度较差，基本无法达到$\epsilon=1e-8$的精度并在完成100次迭代后终止，其余方法均可实现收敛。进一步观察发现，阻尼Newton法所得$||g^*||$虽大于$\epsilon$但也较小，$f^*$也可较好地接近局部极小值，这说明该方法的正确性；如果继续迭代，发现阻尼Newton法会继续“抖动”，$||g^*||$始终无法低于$\epsilon$。为分析其原因，我记录了阻尼Newton的$d_k$并发现其常常并非下降方向，这是因为$G_k$有时并非正定，而遇到上升方向时x就会经历错误的更新进而导致“抖动”。这说明了修正$G_k$的重要性。
-  \item Cholesky修正Newton方法通过尝试正定化$G_k$而具有较好的收敛性，相比所有拟Newton方法迭代次数均显著减少，这说明了精确计算$G_k$确实能带来更快的收敛，这展现了Newton方法二次收敛性的意义。
-  \item 随着n的增大，虽然Newton方法始终比拟Newton方法迭代次数少，但其CPU时间却逐渐落后于拟Newton方法，这是因为计算Hessian矩阵需要更长的时间（$O(n^2)$），只需计算f和g（$O(n)$）的拟Newton方法在大规模问题上有优势，这说明拟Newton方法对于问题规模有更好地伸缩性。注意，本实验设$g(x)$和$G(x)$都作为函数已知，对于一般数值计算情况，我们需要多个$f(x)$值对这二者进行数值近似，在这种情况下Newton方法相比拟Newton方法也会有更多的函数调用次数。
-  \item 拟Newton方法收敛到的函数值普遍小于Newton方法，由于Ackley函数有众多局部极小值，这并不能反映两类方法的收敛效果差别，但我推测这可能是因为拟Newton方法在迭代初期偏向负梯度方向，这使其更快的向$\mathbf{0}$更新，而Newton方法较快地趋向了最近的局部极小值，其函数值相比接近零向量的极小值更大。因此，在Ackley函数这一示例中，拟Newton方法似乎能取得比Newton方法更优的最小化结果，但这一结论并不普适：对于约靠近零向量局部极小值越大的函数，或许我们观察到的结论就会相反。
-  \item 在拟Newton方法中，BFGS通常比DFP有更优的数值表现，多次实验也发现BFGS比DFP的收敛更稳定；由于更简单的形式，SR1具有较快的执行速度。
-\end{itemize}
+\subsection{Griewank函数上的实验}
 
 
 \section{进一步分析}
