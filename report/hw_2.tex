@@ -1,0 +1,293 @@
+%!TEX program = xelatex
+
+\documentclass{article}
+
+% if you need to pass options to natbib, use, e.g.:
+%     \PassOptionsToPackage{numbers, compress}{natbib}
+% before loading neurips_2021
+
+% ready for submission
+\usepackage[final]{neurips_2021}
+
+% to compile a preprint version, e.g., for submission to arXiv, add add the
+% [preprint] option:
+%     \usepackage[preprint]{neurips_2021}
+
+% to compile a camera-ready version, add the [final] option, e.g.:
+%     \usepackage[final]{neurips_2021}
+
+% to avoid loading the natbib package, add option nonatbib:
+%    \usepackage[nonatbib]{neurips_2021}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{xcolor}         % colors
+\usepackage[UTF8]{ctex}
+\usepackage{graphicx}
+\usepackage{amsthm}
+\usepackage{multirow}
+\newtheorem{definition}{定义}
+\newtheorem{theorem}{定理}
+\usepackage{subcaption}
+\usepackage[export]{adjustbox}
+
+\setCJKmainfont{SimSun}[AutoFakeBold=2.5,ItalicFont=KaiTi]%
+\setCJKsansfont{SimHei}[AutoFakeBold=2.5]%
+\setCJKmonofont{FangSong}%
+
+
+\title{《最优化方法》上机作业2：大规模优化问题的数值实验}
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to LaTeX to determine where to break the
+% lines. Using \AND forces a line break at that point. So, if LaTeX puts 3 of 4
+% authors names on the first line, and the last on the second line, try using
+% \AND instead of \And before the third author name.
+
+\author{%
+  张旻昊 Minhao Zhang 2101213233 \\
+  前沿交叉学科研究院 Academy for Advanced Interdisciplinary Studies\\
+  北京大学 Peking University\\
+  颐和园路5号，海淀，北京 Yiheyuan Rd. $5^{th}$, Haidian, Beijing\\
+  \texttt{minhaozhang@pku.edu.cn} \\
+  % examples of more authors
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \AND
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+}
+
+\begin{document}
+%\begin{CJK*}{UTF8}{gbsn}
+
+\maketitle
+
+\begin{abstract}
+  本实验实现了两种共轭梯度方法、基于Beale-Powell重新开始的三项方法及L-BFGS方法的程序，并利用Ackley、Rastrigin等多个函数在大规模设定下测试各方法的收敛表现。
+  
+\end{abstract}
+
+\section{实验设定}
+\subsection{目标函数选取}
+本实验使用如下三种目标函数进行测试。在实验中均使用n>100以测试大规模场景下的性能，所有算法均旨在寻找局部极小值。
+
+\subsubsection{Ackley函数}
+
+Ackley函数形式为：
+\[ \texttt{Ackley}(x) = -20 exp[-\frac{1}{5} \sqrt{\frac{1}{n}\sum\limits_{i=1}^n x_i^2}] - exp[\frac{1}{n} \sum\limits_{i=1}^n cos(2\pi x_i)] + 20+e \]
+
+Ackley函数具有全局最小值$x^* = (0,0,...,0), f(x^*)=0$，此外它还有众多极小值。
+
+\subsubsection{Griewank函数}
+Griewank函数形式为：
+\[ \texttt{Griewank}(x) = \frac{1}{4000}\sum\limits_{i=1}^n x_i^2 - \prod\limits_{i=1}^n cos(\frac{x_i}{\sqrt{i}}) + 1 \]
+它在$x^* = (0,0,...,0)$处取全局极小值$f(x^*)=0$，同时也具有众多局部极小值。
+
+\subsubsection{Rastrigin函数}
+Rastrigin函数形式为：
+\[ \texttt{Rastrigin}(x) = 10n + \sum\limits_{i=0}^n [x_i^2 - 10cos(2\pi x_i)] \]
+其全局极小值$f(x^*)=0$同样在$x^* = (0,0,...,0)$取得，它也具有众多局部极小值。
+
+\subsection{拟Newton方法}
+本实验实现有限内存BFGS方法（L-BFGS），不同于BFGS方法计算$H_k$，它直接计算$d_k$，进而让存储开销从$O(n^2)$降低到$O(n)$。具体地，L-BFGS方法将$H_k$更新公式的最近m步进行展开，这样只需存储最近m步的$s_k = x_k - x_{k-1}$和$yk = g_k - g_{k-1}$，并根据图\ref{fig:lbfgs}即可求得$d_k = -r_{BOUND}$。
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=.8\linewidth]{pics/lbfgs_two_loop.jpg}
+  \caption{L-BFGS方法通过two-loop算法更新$d_k$。}
+  \label{fig:lbfgs}
+\end{figure}
+
+\subsection{共轭梯度法}
+本实验实现基于FR与PRP两种$\beta_k$更新公式的共轭梯度方法，具体实现与教材中完全相同，这里不再赘述。
+
+\subsection{三项方法}
+共轭梯度法实际上是一种二项的梯度型方法，为提升求解精度，Beale-Powell提出了一种包含三项的方向更新公式，本实验实现了这一方法。此算法基于如下更新公式：
+\[ \beta_k = g_k^T [g_k - g_{k-1}] / d_{k-1}^T [g_k - g_{k-1}] \]
+\[ \gamma_k = g_k^T [g_{t+1} - g_t] / d_t^T [g_{t+1} - g_t] \]
+\[ d_k = -g_k + \beta_k d_{k-1} + \gamma_k d_{t} \]
+
+此外，当更新方向不够好时，使用restart的方法更新t=k-1，并设置$\gamma_k=0$（即使用二项公式更新）。存在如下三种restart条件：1)当$g_k^T g_{k-1} \geq 0.2 ||g_k||^2$时，梯度正交性不足，设置重新开始；2)当$k-t\geq n$时，所有理想共轭方向已经用过了，重新开始；3)求出上述$d_k$后，若$-1.2||g_k||^2\leq d_k^T g_k\leq -0.8||g_k||^2$不满足，则重新开始，并重新舍弃第三项计算$d_k$。
+
+
+\section{实验结果}
+本节分别在三个测试函数上比较各方法的实验效果。在实验中，均使用20次迭代的Fibonacci搜索进行精确线搜索；作为基准方法，我们同时与基于Cholesky分解的修正Newton方法、BFGS拟Newton方法进行比较。
+
+\subsection{Ackley函数上的实验}
+
+\begin{table*}[h]
+  \centering
+  \begin{tabular}{c l c c c c c c c}
+    \toprule
+    \bfseries n & \bfseries Methods & \boldmath{$f(x^*)$} & \boldmath $||g(x^*)||$ & \bfseries Time(s) & \bfseries niter & \bfseries feval & \bfseries geval & \bfseries Geval \\
+    \cmidrule(lr){1-9}
+    \multirow{5}{*}{8} &
+    DN & 6.3400 & 1.72e-6 & 0.9913 & 100 & 2250 & 100 & 100 \\
+    & Cholesky  & 6.0174 & $<\epsilon$ & 0.0967 & 8 & 221 & 9 & 8 \\
+    & SR1 & 2.5799 & $<\epsilon$ & 0.3142 & 40 & 1127 & 41 & 0 \\
+    & DFP & 5.7135 & $<\epsilon$ & 0.1194 & 17 & 475 & 18 & 0 \\
+    & BFGS & 1.2967 & $<\epsilon$ & 0.3226 & 44 & 1243 & 45 & 0 \\
+    \cmidrule(lr){1-9}
+    \multirow{5}{*}{16} &
+    DN & 8.2490 & 6.6e-7 & 1.3399 & 100 & 2576 & 100 & 100 \\
+    & Cholesky  & 7.4247 & $<\epsilon$ & 0.0789 & 6 & 177 & 7 & 6 \\
+    & SR1 & 7.1448 & $<\epsilon$ & 0.1835 & 31 & 881 & 32 & 0 \\
+    & DFP & 8.1069 & $<\epsilon$ & 0.2173 & 35 & 995 & 36 & 0 \\
+    & BFGS & 7.4247 & $<\epsilon$ & 0.1423 & 24 & 665 & 25 & 0 \\
+    \cmidrule(lr){1-9}
+    \multirow{5}{*}{32} &
+    DN & 5.1104 & 2.4e-7 & 1.9412 & 100 & 2640 & 100 & 100 \\
+    & Cholesky & 6.1600 & $<\epsilon$ & 0.1519 & 8 & 231 & 9 & 8 \\
+    & SR1 & 6.1600 & $<\epsilon$ & 0.1147 & 19 & 521 & 20 & 0 \\
+    & DFP & 2.1522 & $<\epsilon$ & 0.2753 & 49 & 1311 & 50 & 0 \\
+    & BFGS & 4.7119 & $<\epsilon$ & 0.1764 & 30 & 823 & 31 & 0 \\
+    \cmidrule(lr){1-9}
+    \multirow{5}{*}{64} &
+    DN & 8.0151 & 1.23e-5 & 3.2566 & 100 & 2524 & 100 & 100 \\
+    & Cholesky & 6.7745 & $<\epsilon$ & 0.2441 & 8 & 229 & 9 & 8 \\
+    & SR1 & 6.5910 & $<\epsilon$ & 0.0888 & 15 & 417 & 16 & 0 \\
+    & DFP & 6.5910 & $<\epsilon$ & 0.1147 & 20 & 533 & 21 & 0 \\
+    & BFGS & 6.5910 & $<\epsilon$ & 0.0977 & 15 & 411 & 16 & 0 \\
+    \cmidrule(lr){1-9}
+    \multirow{5}{*}{128} &
+    DN & 6.8139 & 7e-8 & 5.9922 & 100 & 2630 & 100 & 100 \\
+    & Cholesky & 5.8812 & $<\epsilon$ & 0.5655 & 10 & 285 & 11 & 10 \\
+    & SR1 & 4.5954 & $<\epsilon$ & 0.2074 & 30 & 839 & 31 & 0 \\
+    & DFP & 5.7724 & $<\epsilon$ & 0.1311 & 20 & 551 & 21 & 0 \\
+    & BFGS & 5.7724 & $<\epsilon$ & 0.1326 & 19 & 525 & 20 & 0 \\
+    \bottomrule
+  \end{tabular}
+  \caption{Newton型方法在Ackley函数上的比较。所有算法均使用Fibonacci法进行精确线搜索。表中DN指阻尼牛顿法（Damped Newton），Cholesky指基于Cholesky分解的修正Newton方法；Time指CPU时间，niter为迭代轮数，feval、geval和Geval分别指Ackley函数、一阶导数及hessian矩阵的计算次数。$\epsilon=1e-8$。}
+  \label{tab:overall}
+\end{table*}
+
+\begin{itemize}
+  \item 阻尼Newton法收敛精度较差，基本无法达到$\epsilon=1e-8$的精度并在完成100次迭代后终止，其余方法均可实现收敛。进一步观察发现，阻尼Newton法所得$||g^*||$虽大于$\epsilon$但也较小，$f^*$也可较好地接近局部极小值，这说明该方法的正确性；如果继续迭代，发现阻尼Newton法会继续“抖动”，$||g^*||$始终无法低于$\epsilon$。为分析其原因，我记录了阻尼Newton的$d_k$并发现其常常并非下降方向，这是因为$G_k$有时并非正定，而遇到上升方向时x就会经历错误的更新进而导致“抖动”。这说明了修正$G_k$的重要性。
+  \item Cholesky修正Newton方法通过尝试正定化$G_k$而具有较好的收敛性，相比所有拟Newton方法迭代次数均显著减少，这说明了精确计算$G_k$确实能带来更快的收敛，这展现了Newton方法二次收敛性的意义。
+  \item 随着n的增大，虽然Newton方法始终比拟Newton方法迭代次数少，但其CPU时间却逐渐落后于拟Newton方法，这是因为计算Hessian矩阵需要更长的时间（$O(n^2)$），只需计算f和g（$O(n)$）的拟Newton方法在大规模问题上有优势，这说明拟Newton方法对于问题规模有更好地伸缩性。注意，本实验设$g(x)$和$G(x)$都作为函数已知，对于一般数值计算情况，我们需要多个$f(x)$值对这二者进行数值近似，在这种情况下Newton方法相比拟Newton方法也会有更多的函数调用次数。
+  \item 拟Newton方法收敛到的函数值普遍小于Newton方法，由于Ackley函数有众多局部极小值，这并不能反映两类方法的收敛效果差别，但我推测这可能是因为拟Newton方法在迭代初期偏向负梯度方向，这使其更快的向$\mathbf{0}$更新，而Newton方法较快地趋向了最近的局部极小值，其函数值相比接近零向量的极小值更大。因此，在Ackley函数这一示例中，拟Newton方法似乎能取得比Newton方法更优的最小化结果，但这一结论并不普适：对于约靠近零向量局部极小值越大的函数，或许我们观察到的结论就会相反。
+  \item 在拟Newton方法中，BFGS通常比DFP有更优的数值表现，多次实验也发现BFGS比DFP的收敛更稳定；由于更简单的形式，SR1具有较快的执行速度。
+\end{itemize}
+
+
+\section{进一步分析}
+\subsection{不同线搜索算法比较}
+本节比较前文所述的两种线搜索算法，表\ref{tab:line_search}展示了GLL和Fibonacci两种线搜索在BFGS上的实验效果（其他设定与前文相同）。
+
+\begin{table*}[h]
+  \centering
+  \begin{tabular}{c l c c c c c c c}
+    \toprule
+    \bfseries n & \bfseries Methods & \boldmath{$f(x^*)$} & \boldmath $||g(x^*)||$ & \bfseries Time(s) & \bfseries niter & \bfseries feval & \bfseries geval & \bfseries Geval \\
+    \cmidrule(lr){1-9}
+    \multirow{2}{*}{8} &
+    Fibonacci & 4.8841 & $<\epsilon$ & 0.2234 & 25 & 701 & 26 & 0 \\
+    & GLL  & 5.8176 & $<\epsilon$ & 0.0499 & 37 & 89 & 38 & 0 \\
+    \cmidrule(lr){1-9}
+    \multirow{2}{*}{16} &
+    Fibonacci & 4.5308 & $<\epsilon$ & 0.2781 & 37 & 1015 & 38 & 0 \\
+    & GLL  & 2.5799 & $<\epsilon$ & 0.0838 & 68 & 160 & 69 & 0 \\
+    \cmidrule(lr){1-9}
+    \multirow{2}{*}{32} &
+    Fibonacci & 4.6046 & $<\epsilon$ & 0.1855 & 32 & 881 & 33 & 0 \\
+    & GLL  & 2.7287 & $<\epsilon$ & 0.0668 & 70 & 150 & 71 & 0 \\
+    \cmidrule(lr){1-9}
+    \multirow{2}{*}{64} &
+    Fibonacci & 6.0415 & $<\epsilon$ & 0.1097 & 19 & 523 & 20 & 0 \\
+    & GLL  & 5.4676 & $<\epsilon$ & 0.0379 & 39 & 90 & 40 & 0 \\
+    \cmidrule(lr){1-9}
+    \multirow{2}{*}{128} &
+    Fibonacci & 6.8141 & $<\epsilon$ & 0.1310 & 19 & 517 & 20 & 0 \\
+    & GLL  & 6.8680 & $<\epsilon$ & 0.0399 & 23 & 47 & 24 & 0 \\
+    \bottomrule
+  \end{tabular}
+  \caption{GLL与Fibonacci两种线搜索方法在BFGS上的比较。$\epsilon=1e-8$。}
+  \label{tab:line_search}
+\end{table*}
+
+可见，两算法均可实现收敛（$||g^*||<\epsilon$）；在迭代次数方面，精确线搜索的Fibonacci方法更少，这是因为精确的搜索使每步的步长选取更有效；而在CPU时间、函数调用次数等方面，非精确线搜索GLL方法显著优于精确线搜索，这是因为其每步无需全部完成Fibonacci法的20次函数调用，只需通过指数降低$\alpha$满足GLL准则，从表中可见平均每次搜索仅需1$\sim$2次函数调用，而显著减少的函数调用提高了其运行效率，让它即便需要更多的迭代轮数仍保持更低的耗时。这一结果体现了非精确线搜索的典型特征：通常迭代轮数更多，但函数调用次数显著减少，从而提升算法性能。
+
+\subsection{初始值对收敛性的影响}
+如图\ref{fig:ackley}所示，Ackley函数具有众多极小值，$\mathbf{0}$处为其全局最小值，其余的极小值离$\mathbf{0}$越远值越大。因此，初始点离$\mathbf{0}$越远往往算法就越难以收敛到更小的极小值，本节尝试验证这一点。具体地，我们在先随机初始化一个满足标准正态分布的初始向量，再将其依次乘以$k\in \{1,2,4,8,16\}$作为五个初始迭代点，分别运行基于GLL准则线搜索的Cholesky修正Newton方法，结果如表\ref{tab:init_value}所示。
+
+可见，算法在不同初始值上均可收敛，表明其具有较好的全局收敛性。对于所有问题规模n，最终收敛到的函数值$f^*$随k的增大而增大，这符合上述结论；此外，k的变化对算法执行时间、函数调用次数等指标的影响并不显著，这说明在不同初始值处寻找局部极小值的难度差别并不十分显著。
+
+这些结果也对我们进行数值计算实践给出了一点启发：通常而言，我们希望得到尽可能小的目标函数值，亦即寻找一个相对更优的局部极小值，在这一设定下初始值的选取变得重要，往往取得离最优局部极小值更近的初始值（例如这里的k=1）可以帮助算法收敛到更小的极值点。这一点结论与当下深度学习领域对预训练、规范初始化的相关工作之动机与结论相契合。
+
+\begin{table*}[h]
+  \centering
+  \begin{tabular}{c c c c c c c c c}
+    \toprule
+    \bfseries n & \bfseries k & \boldmath{$f(x^*)$} & \boldmath $||g(x^*)||$ & \bfseries Time(s) & \bfseries niter & \bfseries feval & \bfseries geval & \bfseries Geval \\
+    \cmidrule(lr){1-9}
+    \multirow{5}{*}{8} &
+       1 &  2.5799 & $<\epsilon$ & 0.0400 &  8 & 27 &  9 & 8 \\
+    &  2 &  5.4958 & $<\epsilon$ & 0.0563 & 12 & 37 & 13 & 12 \\
+    &  4 & 11.7645 & $<\epsilon$ & 0.0458 & 10 & 31 & 11 & 10 \\
+    &  8 & 13.6390 & $<\epsilon$ & 0.0370 &  8 & 29 &  9 & 8 \\
+    & 16 & 19.0864 & $<\epsilon$ & 0.0242 &  5 & 16 &  6 & 5 \\
+    \cmidrule(lr){1-9}
+    \multirow{5}{*}{16} &
+       1 &  2.5799 & $<\epsilon$ & 0.1539 & 20 & 61 & 21 & 20 \\
+    &  2 &  7.6225 & $<\epsilon$ & 0.1101 & 15 & 46 & 16 & 15 \\
+    &  4 & 11.9124 & $<\epsilon$ & 0.0983 &  9 & 29 & 10 & 9 \\
+    &  8 & 18.0296 & $<\epsilon$ & 0.0984 & 13 & 40 & 14 & 13 \\
+    & 16 & 18.2010 & $<\epsilon$ & 0.1128 & 11 & 34 & 12 & 11 \\
+    \cmidrule(lr){1-9}
+    \multirow{5}{*}{32} &
+       1 &  3.4689 & $<\epsilon$ & 0.2239 & 17 & 61 & 18 & 17 \\
+    &  2 &  6.9592 & $<\epsilon$ & 0.1069 &  8 & 29 &  9 & 8 \\
+    &  4 & 11.7761 & $<\epsilon$ & 0.1337 & 10 & 41 & 11 & 10 \\
+    &  8 & 15.1418 & $<\epsilon$ & 0.1200 &  9 & 31 & 10 & 9 \\
+    & 16 & 19.3774 & $<\epsilon$ & 0.2293 & 15 & 46 & 16 & 15 \\
+    \cmidrule(lr){1-9}
+    \multirow{5}{*}{64} &
+       1 &  3.6751 & $<\epsilon$ & 0.4887 & 20 & 68 & 21 & 20 \\
+    &  2 &  7.1266 & $<\epsilon$ & 0.4013 & 16 & 49 & 17 & 16 \\
+    &  4 & 12.1688 & $<\epsilon$ & 0.4218 & 17 & 86 & 18 & 17 \\
+    &  8 & 16.6058 & $<\epsilon$ & 0.1751 &  7 & 24 &  8 & 7 \\
+    & 16 & 19.1020 & $<\epsilon$ & 0.2447 & 10 & 34 & 11 & 10 \\
+    \cmidrule(lr){1-9}
+    \multirow{5}{*}{128} &
+       1 &  5.2257 & $<\epsilon$ & 0.6786 & 14 & 70 & 15 & 14 \\
+    &  2 &  6.5065 & $<\epsilon$ & 0.3273 &  7 & 28 &  8 & 7 \\
+    &  4 & 12.6906 & $<\epsilon$ & 0.3303 &  7 & 25 &  8 & 7 \\
+    &  8 & 17.0561 & $<\epsilon$ & 0.3845 &  8 & 29 &  9 & 8 \\
+    & 16 & 19.3248 & $<\epsilon$ & 0.8478 & 18 & 60 & 19 & 18 \\
+    \bottomrule
+  \end{tabular}
+  \caption{不同初始值选取对Cholesky修正Newton方法的影响。其中k代表初始点相较标准正态分布的倍数，$\epsilon=1e-8$。}
+  \label{tab:init_value}
+\end{table*}
+
+
+\section{总结}
+本文比较了多种Newton和拟Newton方法在Ackley函数上的数值表现，分析了二者的优劣；本文还针对不同线搜索策略、不同初始迭代值对收敛过程的影响进行了数值实验及分析，为未来在不同问题上应用各类技巧给出了一些经验性分析。
+
+
+%end{CJK*}
+\end{document}
