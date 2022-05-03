@@ -1,4 +1,5 @@
 import time
+from easom import easom_func
 import numpy as np
 import torch
 
@@ -6,6 +7,7 @@ from ackley_func import ackley_func
 from zakharov import zakharov_func
 from griewank import griewank_func
 from rastrigin import rastrigin_func
+from easom import easom_func
 from line_search import fib_searcher, gll_searcher
 from newton import damp_newton_method
 from quasi_newton import quasi_newton_method, sr1_update_func, dfp_update_func, bfgs_update_func
@@ -21,6 +23,8 @@ def get_func_new_inst_by_name(name):
         return griewank_func()
     elif name == 'rastrigin':
         return rastrigin_func()
+    elif name == 'easom':
+        return easom_func()
 
 
 def newton_test(x0, use_cholesky_correction, line_searcher, trial_name, func_name='ackley'):
@@ -169,7 +173,7 @@ def main_hw2_griewank():
     for x_scale in x_scales:
         print('================= Scale of X is {} ================'.format(x_scale))
         #x0 = torch.randn(x_scale) * 32.768  # Ackley's function's range
-        x0 = torch.randn(x_scale) * 100
+        x0 = torch.randn(x_scale) * 20
         newton_test(x0, True, fib_search_inst, 'Cholesky', func_name)
         q_newton_test(x0, sr1_update_func, fib_search_inst, 'Quasi SR1', func_name)
         q_newton_test(x0, bfgs_update_func, fib_search_inst, 'Quasi BFGS', func_name)
@@ -187,7 +191,26 @@ def main_hw2_rastrigin():
     for x_scale in x_scales:
         print('================= Scale of X is {} ================'.format(x_scale))
         #x0 = torch.randn(x_scale) * 32.768  # Ackley's function's range
-        x0 = torch.randn(x_scale) * 1
+        x0 = torch.randn(x_scale) * 0.2
+        newton_test(x0, True, fib_search_inst, 'Cholesky', func_name)
+        q_newton_test(x0, sr1_update_func, fib_search_inst, 'Quasi SR1', func_name, n_epochs=500)
+        q_newton_test(x0, bfgs_update_func, fib_search_inst, 'Quasi BFGS', func_name, n_epochs=500)
+        q_newton_test(x0, 'LBFGS', fib_search_inst, 'L-BFGS\t', func_name, n_epochs=2000)
+        conjugate_gradient_test(x0, fr_func, fib_search_inst, 'FR Conjugate', 'two', func_name)
+        conjugate_gradient_test(x0, prp_func, fib_search_inst, 'PRP Conjugate', 'two', func_name)
+        conjugate_gradient_test(x0, None, fib_search_inst, 'Powell restart', 'three', func_name)
+
+
+def main_hw2_easom():
+    fib_search_inst = gll_searcher(gamma=1e-3, sigma=0.5, window=5, a0=1)
+    x_scales = [100, 200, 300, 400, 500]
+    func_name = 'easom'
+    print('=========================== Easom Function ==========================')
+    for x_scale in x_scales:
+        print('================= Scale of X is {} ================'.format(x_scale))
+        #x0 = torch.randn(x_scale) * 32.768  # Ackley's function's range
+        x0 = torch.randn(x_scale) * 2 * np.pi + np.pi
+        x0 = torch.ones(x_scale) * np.pi + 0.01
         newton_test(x0, True, fib_search_inst, 'Cholesky', func_name)
         q_newton_test(x0, sr1_update_func, fib_search_inst, 'Quasi SR1', func_name, n_epochs=500)
         q_newton_test(x0, bfgs_update_func, fib_search_inst, 'Quasi BFGS', func_name, n_epochs=500)
@@ -204,3 +227,4 @@ if __name__ == '__main__':
     #main_hw2_zakharov()
     #main_hw2_griewank()
     main_hw2_rastrigin()
+    #main_hw2_easom()

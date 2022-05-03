@@ -1,0 +1,41 @@
+=========================== Griewank Function ==========================
+================= Scale of X is 100 ================
+Cholesky        fx* = 0.0000    |gx*| = 0.00000000      time = 0.181079 epochs = 2      feval = 10      geval = 3       Geval = 2
+Quasi SR1       fx* = 0.0000    |gx*| = 0.00000001      time = 0.065423 epochs = 17     feval = 53      geval = 18      Geval = 0
+Quasi BFGS      fx* = 0.0000    |gx*| = 0.00000001      time = 0.137853 epochs = 32     feval = 98      geval = 33      Geval = 0
+L-BFGS          fx* = 0.0000    |gx*| = 0.00000001      time = 0.155392 epochs = 32     feval = 98      geval = 33      Geval = 0
+FR Conjugate    fx* = 0.0632    |gx*| = 0.23332602      time = 0.744636 epochs = 299    feval = 2109    geval = 300     Geval = 0
+PRP Conjugate   fx* = 8.9937    |gx*| = 0.08940769      time = 0.640567 epochs = 299    feval = 900     geval = 300     Geval = 0
+Powell restart  fx* = 10.2864   |gx*| = 0.09636574      time = 0.751247 epochs = 299    feval = 900     geval = 300     Geval = 0
+================= Scale of X is 200 ================
+Cholesky        fx* = 0.0000    |gx*| = 0.00000000      time = 0.317501 epochs = 2      feval = 10      geval = 3       Geval = 2
+Quasi SR1       fx* = 0.0000    |gx*| = 0.00000001      time = 0.101194 epochs = 20     feval = 62      geval = 21      Geval = 0
+Quasi BFGS      fx* = 0.0000    |gx*| = 0.00000001      time = 0.180936 epochs = 43     feval = 131     geval = 44      Geval = 0
+L-BFGS          fx* = 0.0000    |gx*| = 0.00000001      time = 0.104728 epochs = 44     feval = 134     geval = 45      Geval = 0
+FR Conjugate    fx* = 0.4132    |gx*| = 0.56356233      time = 1.434527 epochs = 299    feval = 2555    geval = 300     Geval = 0
+PRP Conjugate   fx* = 16.0523   |gx*| = 0.12268770      time = 0.271349 epochs = 299    feval = 900     geval = 300     Geval = 0
+Powell restart  fx* = 18.4863   |gx*| = 0.13223572      time = 0.548449 epochs = 299    feval = 900     geval = 300     Geval = 0
+================= Scale of X is 300 ================
+Cholesky        fx* = 0.0000    |gx*| = 0.00000000      time = 0.445590 epochs = 2      feval = 10      geval = 3       Geval = 2
+Quasi SR1       fx* = 0.0000    |gx*| = 0.00000001      time = 0.090200 epochs = 22     feval = 68      geval = 23      Geval = 0
+Quasi BFGS      fx* = 0.0000    |gx*| = 0.00000001      time = 1.005544 epochs = 47     feval = 143     geval = 48      Geval = 0
+L-BFGS          fx* = 0.0000    |gx*| = 0.00000001      time = 0.203830 epochs = 51     feval = 155     geval = 52      Geval = 0
+FR Conjugate    fx* = 0.4090    |gx*| = 0.69929355      time = 0.956777 epochs = 299    feval = 2515    geval = 300     Geval = 0
+PRP Conjugate   fx* = 21.4195   |gx*| = 0.14289673      time = 0.487571 epochs = 299    feval = 900     geval = 300     Geval = 0
+Powell restart  fx* = 24.7214   |gx*| = 0.15401748      time = 0.767242 epochs = 299    feval = 900     geval = 300     Geval = 0
+================= Scale of X is 400 ================
+Cholesky        fx* = 0.0000    |gx*| = 0.00000000      time = 0.851484 epochs = 2      feval = 10      geval = 3       Geval = 2
+Quasi SR1       fx* = 0.0000    |gx*| = 0.00000001      time = 0.184743 epochs = 23     feval = 71      geval = 24      Geval = 0
+Quasi BFGS      fx* = 0.0000    |gx*| = 0.00000001      time = 1.797251 epochs = 53     feval = 161     geval = 54      Geval = 0
+L-BFGS          fx* = 0.0000    |gx*| = 0.00000001      time = 0.307301 epochs = 59     feval = 179     geval = 60      Geval = 0
+FR Conjugate    fx* = 0.4548    |gx*| = 0.68825793      time = 1.205108 epochs = 299    feval = 2437    geval = 300     Geval = 0
+PRP Conjugate   fx* = 31.4980   |gx*| = 0.17463668      time = 0.582241 epochs = 299    feval = 900     geval = 300     Geval = 0
+Powell restart  fx* = 36.4296   |gx*| = 0.18822756      time = 0.749128 epochs = 299    feval = 900     geval = 300     Geval = 0
+================= Scale of X is 500 ================
+Cholesky        fx* = 0.0000    |gx*| = 0.00000000      time = 1.126067 epochs = 2      feval = 10      geval = 3       Geval = 2
+Quasi SR1       fx* = 0.0000    |gx*| = 0.00000001      time = 0.314262 epochs = 24     feval = 74      geval = 25      Geval = 0
+Quasi BFGS      fx* = 0.0000    |gx*| = 0.00000001      time = 3.019800 epochs = 59     feval = 179     geval = 60      Geval = 0
+L-BFGS          fx* = 0.0000    |gx*| = 0.00000001      time = 0.353579 epochs = 62     feval = 188     geval = 63      Geval = 0
+FR Conjugate    fx* = 0.6047    |gx*| = 0.68728566      time = 1.197815 epochs = 299    feval = 2030    geval = 300     Geval = 0
+PRP Conjugate   fx* = 36.9223   |gx*| = 0.18953170      time = 0.925023 epochs = 299    feval = 900     geval = 300     Geval = 0
+Powell restart  fx* = 42.7311   |gx*| = 0.20428179      time = 0.968182 epochs = 299    feval = 900     geval = 300     Geval = 0
